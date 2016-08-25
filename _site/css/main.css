@@ -74,8 +74,6 @@ h2 {
 a {
   color: #069;
   text-decoration: none; }
-  a:visited {
-    color: #00334d; }
 
 /**
  * Blockquotes
@@ -275,16 +273,14 @@ pre {
 .post-list {
   margin-left: 0;
   list-style: none; }
-  .post-list > li {
-    margin-bottom: 30px; }
 
 .post-meta {
   font-size: 13.125px;
-  color: #828282; }
+  color: #828282;
+  text-transform: uppercase; }
 
 .post-link {
-  display: block;
-  font-size: 24px; }
+  font-size: 15px; }
 
 /**
  * Posts
