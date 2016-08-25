@@ -11,9 +11,9 @@ dl, dd, ol, ul, figure {
  * Basic styling
  */
 body {
-  font: 400 16px/1.5 "Helvetica Neue", Helvetica, Arial, sans-serif;
-  color: #111;
-  background-color: #fdfdfd;
+  font: 300 15px/1.5 "Roboto", sans-serif;
+  color: #000;
+  background-color: #ffffff;
   -webkit-text-size-adjust: 100%;
   -webkit-font-feature-settings: "kern" 1;
   -moz-font-feature-settings: "kern" 1;
@@ -44,7 +44,7 @@ figure > img {
   display: block; }
 
 figcaption {
-  font-size: 14px; }
+  font-size: 13.125px; }
 
 /**
  * Lists
@@ -60,19 +60,22 @@ li > ol {
  * Headings
  */
 h1, h2, h3, h4, h5, h6 {
-  font-weight: 400; }
+  font-weight: 500; }
+
+h1 {
+  font-size: 1rem; }
+
+h2 {
+  font-size: 1rem; }
 
 /**
  * Links
  */
 a {
-  color: #2a7ae2;
+  color: #069;
   text-decoration: none; }
   a:visited {
-    color: #1756a9; }
-  a:hover {
-    color: #111;
-    text-decoration: underline; }
+    color: #00334d; }
 
 /**
  * Blockquotes
@@ -112,16 +115,16 @@ pre {
  * Wrapper
  */
 .wrapper {
-  max-width: -webkit-calc(800px - (30px * 2));
-  max-width: calc(800px - (30px * 2));
+  max-width: -webkit-calc(680px - (30px * 2));
+  max-width: calc(680px - (30px * 2));
   margin-right: auto;
   margin-left: auto;
   padding-right: 30px;
   padding-left: 30px; }
   @media screen and (max-width: 800px) {
     .wrapper {
-      max-width: -webkit-calc(800px - (30px));
-      max-width: calc(800px - (30px));
+      max-width: -webkit-calc(680px - (30px));
+      max-width: calc(680px - (30px));
       padding-right: 15px;
       padding-left: 15px; } }
 
@@ -169,7 +172,7 @@ pre {
   .site-nav .menu-icon {
     display: none; }
   .site-nav .page-link {
-    color: #111;
+    color: #000;
     line-height: 1.5; }
     .site-nav .page-link:not(:last-child) {
       margin-right: 20px; }
@@ -178,7 +181,7 @@ pre {
       position: absolute;
       top: 9px;
       right: 15px;
-      background-color: #fdfdfd;
+      background-color: #ffffff;
       border: 1px solid #e8e8e8;
       border-radius: 5px;
       text-align: right; }
@@ -276,7 +279,7 @@ pre {
     margin-bottom: 30px; }
 
 .post-meta {
-  font-size: 14px;
+  font-size: 13.125px;
   color: #828282; }
 
 .post-link {
