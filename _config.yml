@@ -1,0 +1,44 @@
+# # # # # # # #
+#   K i k o   #
+# # # # # # # #
+
+# Basic
+name:               "Aws's Blog"
+
+# URL
+baseurl:            "/Kiko"
+#baseurl:            "" #For Root Domain
+permalink:          /:year/:month/:day/:title.html
+
+# Markdown
+markdown:           kramdown
+
+# Navigation
+nav:
+  - name:           "About"
+    href:           "http://cs.wisc.edu/~aws"
+  
+  - name:           "Twitter"
+    href:           "http://twitter.com/awsTO"
+
+# Sass
+sass:
+  style:            :compressed
+
+#disqus
+comments: true
+
+# Scopes
+defaults:
+  -
+    scope:
+      path:         ""
+      type:         "pages"
+    values:
+      layout:       "page"
+  -
+    scope:
+      path:         ""
+      type:         "posts"
+    values:
+      layout:       "post"
