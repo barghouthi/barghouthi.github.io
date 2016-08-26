@@ -172,7 +172,8 @@
 }
 
 .page-heading {
-    font-size: 20px;
+    font-size: 16px;
+    font-weight: 500;
 }
 
 .post-list {
@@ -184,6 +185,7 @@
     font-size: $small-font-size;
     color: $grey-color;
     text-transform: uppercase;
+    margin-top: -5px
 }
 
 .post-link {
@@ -200,8 +202,7 @@
 }
 
 .post-title {
-    font-size: 42px;
-    letter-spacing: -1px;
+    font-size: 1.5rem;
     line-height: 1;
 
     @include media-query($on-laptop) {
@@ -213,15 +214,15 @@
     margin-bottom: $spacing-unit;
 
     h2 {
-        font-size: 32px;
+        font-size: 1.1rem;
 
         @include media-query($on-laptop) {
-            font-size: 28px;
+            font-size: 1.1rem;
         }
     }
 
     h3 {
-        font-size: 26px;
+        font-size: 1.1rem;
 
         @include media-query($on-laptop) {
             font-size: 22px;
