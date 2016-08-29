@@ -213,8 +213,14 @@ pre {
  * Site footer
  */
 .site-footer {
-  border-top: 1px solid #e8e8e8;
+  color: #828282;
   padding: 30px 0; }
+
+.site-footer a {
+  color: #828282; }
+
+.site-footer a {
+  text-color: #000; }
 
 .footer-heading {
   font-size: 18px;
