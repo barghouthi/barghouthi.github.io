@@ -1,4 +1,5 @@
-baseurl: /barghouthi.github.io
+baseurl:
+url: "barghouthi.github.io"
 title: Aws's Notes
 author: Aws Albarghouthi
 simple_search: http://google.com/search
