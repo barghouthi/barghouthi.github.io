@@ -85,7 +85,7 @@ Think of this as the naive solution of a problem
 that you’re sure works correctly, but that you won’t put into production, perhaps because it’s pretty inefficient.
 Your goal is to find a program <code class="highlighter-rouge">p_smart</code>
 that is equivalent to <code class="highlighter-rouge">p_naive</code>,
-but that is more efficient and hard to get right.<label for="compiler" class="margin-toggle sidenote-number"></label><input type="checkbox" id="compiler" class="margin-toggle" /><span class="sidenote">“But this is what an optimizing compiler does!” you protest. Yes! But here we are taking a <em>combinatorial</em> approach: a compiler applies a fixed set of tricks to find get to a program of interest; here we will manually define a space of programs, and search it exhaustively until we find the right one. Effectively, we are doing <em>super optimization</em> </span></p>
+but that is more efficient and hard to get right.<label for="compiler" class="margin-toggle sidenote-number"></label><input type="checkbox" id="compiler" class="margin-toggle" /><span class="sidenote">“But this is what an optimizing compiler does!” you protest. Yes! But here we are taking a <em>combinatorial</em> approach: a compiler applies a fixed set of tricks to get to an efficient program; here we will manually define a space of programs, and search it exhaustively until we find the right one. In some sense, we are doing <em>superoptimization</em> </span></p>
 
 <p>For illustration, let’s look at an extremely simple example.
 The naive program is the following,

@@ -5,8 +5,8 @@
     <description>Aws Albarghouthi&#39;s Notes</description>
     <link>/</link>
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Mon, 24 Apr 2017 22:41:42 -0500</pubDate>
-    <lastBuildDate>Mon, 24 Apr 2017 22:41:42 -0500</lastBuildDate>
+    <pubDate>Mon, 24 Apr 2017 22:50:38 -0500</pubDate>
+    <lastBuildDate>Mon, 24 Apr 2017 22:50:38 -0500</lastBuildDate>
     <generator>Jekyll v3.1.3</generator>
     
       <item>
@@ -43,7 +43,7 @@ Think of this as the naive solution of a problem
 that you’re sure works correctly, but that you won’t put into production, perhaps because it’s pretty inefficient.
 Your goal is to find a program &lt;code class=&quot;highlighter-rouge&quot;&gt;p_smart&lt;/code&gt;
 that is equivalent to &lt;code class=&quot;highlighter-rouge&quot;&gt;p_naive&lt;/code&gt;,
-but that is more efficient and hard to get right.&lt;label for=&quot;compiler&quot; class=&quot;margin-toggle sidenote-number&quot;&gt;&lt;/label&gt;&lt;input type=&quot;checkbox&quot; id=&quot;compiler&quot; class=&quot;margin-toggle&quot; /&gt;&lt;span class=&quot;sidenote&quot;&gt;“But this is what an optimizing compiler does!” you protest. Yes! But here we are taking a &lt;em&gt;combinatorial&lt;/em&gt; approach: a compiler applies a fixed set of tricks to find get to a program of interest; here we will manually define a space of programs, and search it exhaustively until we find the right one. Effectively, we are doing &lt;em&gt;super optimization&lt;/em&gt; &lt;/span&gt;&lt;/p&gt;
+but that is more efficient and hard to get right.&lt;label for=&quot;compiler&quot; class=&quot;margin-toggle sidenote-number&quot;&gt;&lt;/label&gt;&lt;input type=&quot;checkbox&quot; id=&quot;compiler&quot; class=&quot;margin-toggle&quot; /&gt;&lt;span class=&quot;sidenote&quot;&gt;“But this is what an optimizing compiler does!” you protest. Yes! But here we are taking a &lt;em&gt;combinatorial&lt;/em&gt; approach: a compiler applies a fixed set of tricks to get to an efficient program; here we will manually define a space of programs, and search it exhaustively until we find the right one. In some sense, we are doing &lt;em&gt;superoptimization&lt;/em&gt; &lt;/span&gt;&lt;/p&gt;
 
 &lt;p&gt;For illustration, let’s look at an extremely simple example.
 The naive program is the following,
