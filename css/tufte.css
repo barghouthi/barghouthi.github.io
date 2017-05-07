@@ -452,7 +452,7 @@ div.table-wrapper {
     width: 90%; }
 
   pre code {
-    width: 90%; }
+    width: 55%; }
 
   ul {
     width: 85%; }
@@ -519,7 +519,7 @@ label.margin-toggle:not(.sidenote-number) {
     cursor: pointer; }
 
   pre, pre code, p code, p pre code {
-    width: 65%;
+    width: 55%;
     padding: 0; }
 
   .table-caption {
