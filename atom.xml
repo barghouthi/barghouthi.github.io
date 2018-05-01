@@ -4,7 +4,7 @@
  <title></title>
  <link href="http://barghouthi.github.io/atom.xml" rel="self"/>
  <link href="http://barghouthi.github.io/"/>
- <updated>2018-05-01T11:02:12-05:00</updated>
+ <updated>2018-05-01T11:15:12-05:00</updated>
  <id>http://barghouthi.github.io</id>
  <author>
    <name>Aws Albarghouthi</name>
@@ -112,7 +112,7 @@ we have&lt;/p&gt;
 
 &lt;p&gt;That is, the rate of change $v_1$ is the sum of the rates of change of $v_2$ and $v_3$.&lt;/p&gt;
 
-&lt;p&gt;&lt;strong&gt;Multiplication&lt;/strong&gt; For multiplication by a constant,&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Multiplication&lt;/strong&gt; For multiplication,&lt;/p&gt;
 
 &lt;script type=&quot;math/tex; mode=display&quot;&gt;\partial\textit{post}(v_1 \gets v_2 \times v_3) \triangleq s[v_1 \mapsto s(v_2) \times s(v_3)][\dot v_1 \mapsto \dot v_2 \times v_3 + v_2 \times \dot v_3]&lt;/script&gt;
 
