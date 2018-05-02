@@ -4,7 +4,7 @@
  <title></title>
  <link href="http://barghouthi.github.io/atom.xml" rel="self"/>
  <link href="http://barghouthi.github.io/"/>
- <updated>2018-05-01T11:15:12-05:00</updated>
+ <updated>2018-05-02T11:10:24-05:00</updated>
  <id>http://barghouthi.github.io</id>
  <author>
    <name>Aws Albarghouthi</name>
@@ -27,7 +27,7 @@ The assumption is that—extrapolating from myself here—you got into this fiel
 &lt;hr /&gt;
 
 &lt;h2 id=&quot;programming-language&quot;&gt;Programming language&lt;/h2&gt;
-&lt;p&gt;Let’s consider a very simple programming language where there are no loops or conditions, just a sequence of assignment statements the form:&lt;/p&gt;
+&lt;p&gt;Let’s consider a very simple programming language where there are no loops or conditions, just a sequence of assignment statements of the form:&lt;/p&gt;
 
 &lt;script type=&quot;math/tex; mode=display&quot;&gt;v_1 \gets c&lt;/script&gt;
 
@@ -66,7 +66,7 @@ For our function $f$,&lt;/p&gt;
 &lt;p&gt;Notice that  $\frac{\partial f}{\partial x}(0) = 0$,
 since  $x = 0$ is a &lt;em&gt;stationary point&lt;/em&gt;, so the rate of change at that point is 0.&lt;/p&gt;
 
-&lt;p&gt;&lt;em&gt;Technically, we’re computing total derivatives in the post, since we only have one input variable $x$, which I enforce for simplicity. The general methodology I lay out here easily extends to functions with multiple input arguments.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Technically, we’re computing total derivatives in this post, since we only have one input variable $x$, which I enforce for simplicity. The general methodology I lay out here easily extends to functions with multiple input arguments.&lt;/em&gt;&lt;/p&gt;
 
 &lt;h2 id=&quot;language-semantics&quot;&gt;Language semantics&lt;/h2&gt;
 &lt;p&gt;The semantics of our little language is standard.
@@ -82,7 +82,7 @@ The function $\textit{post}$ below takes a program and a state $s$ and returns t
   &lt;li&gt;$\textit{post}(v_1 \gets cos(v_2), s) \triangleq s[v_1 \mapsto cos(s(v_2))]$&lt;/li&gt;
 &lt;/ol&gt;
 
-&lt;p&gt;Above, $P_1;P_2$ denotes sequential composition.
+&lt;p&gt;Above, $P_1;P_2$ denotes sequential composition,
 $s(v)$ denotes the value of $v$ in state $s$, and $s[v \mapsto c]$ denotes state $s$ but with $v$ mapping to the value $c$.&lt;/p&gt;
 
 &lt;h2 id=&quot;forward-differentiation&quot;&gt;Forward differentiation&lt;/h2&gt;
@@ -102,25 +102,25 @@ $s(v)$ denotes the value of $v$ in state $s$, and $s[v \mapsto c]$ denotes state
 &lt;p&gt;&lt;strong&gt;Constant assignment&lt;/strong&gt; For the constant assignment $v_1 \gets c$,
 we have&lt;/p&gt;
 
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;\partial\textit{post}(v_1 \gets c) \triangleq s[v_1 \mapsto c][ \dot v_1 \mapsto 0]&lt;/script&gt;
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\partial\textit{post}(v_1 \gets c, s) \triangleq s[v_1 \mapsto c][ \dot v_1 \mapsto 0]&lt;/script&gt;
 
 &lt;p&gt;In other words, the rate of change of $v_1$ is zero, since it’s not dependent on $x$ in any way.&lt;/p&gt;
 
 &lt;p&gt;&lt;strong&gt;Addition&lt;/strong&gt; For addition, we have&lt;/p&gt;
 
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;\partial\textit{post}(v_1 \gets v_2 + v_3) \triangleq s[v \mapsto s(v_1) + s(v_2)][ \dot v \mapsto s(\dot v_1) + s(\dot v_2)]&lt;/script&gt;
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\partial\textit{post}(v_1 \gets v_2 + v_3, s) \triangleq s[v \mapsto s(v_1) + s(v_2)][ \dot v \mapsto s(\dot v_1) + s(\dot v_2)]&lt;/script&gt;
 
-&lt;p&gt;That is, the rate of change $v_1$ is the sum of the rates of change of $v_2$ and $v_3$.&lt;/p&gt;
+&lt;p&gt;That is, the rate of change of $v_1$ is the sum of the rates of change of $v_2$ and $v_3$.&lt;/p&gt;
 
 &lt;p&gt;&lt;strong&gt;Multiplication&lt;/strong&gt; For multiplication,&lt;/p&gt;
 
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;\partial\textit{post}(v_1 \gets v_2 \times v_3) \triangleq s[v_1 \mapsto s(v_2) \times s(v_3)][\dot v_1 \mapsto \dot v_2 \times v_3 + v_2 \times \dot v_3]&lt;/script&gt;
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\partial\textit{post}(v_1 \gets v_2 \times v_3, s) \triangleq s[v_1 \mapsto s(v_2) \times s(v_3)][\dot v_1 \mapsto \dot v_2 \times v_3 + v_2 \times \dot v_3]&lt;/script&gt;
 
 &lt;p&gt;In other words, the rate of change of $v_1$ w.r.t. $x$ is the rate of change of $v_2$, scaled by $v_1$, plus the rate of change of $v_3$, scaled by $v_2$.&lt;/p&gt;
 
 &lt;p&gt;&lt;strong&gt;Trignometric functions&lt;/strong&gt; For cosine, we have&lt;/p&gt;
 
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;\partial\textit{post}(v_1 \gets cos(v_2)) \triangleq s[v \mapsto cos(s(v_2))] [\dot v \mapsto \dot v_2 \times sin(s(v_2))]&lt;/script&gt;
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\partial\textit{post}(v_1 \gets cos(v_2), s) \triangleq s[v \mapsto cos(s(v_2))] [\dot v \mapsto \dot v_2 \times sin(s(v_2))]&lt;/script&gt;
 
 &lt;p&gt;This follows from the &lt;em&gt;chain rule&lt;/em&gt;, which says that the rate of change of $f(u)$ is the rate of change of $f$ scaled by the rate of change of its argument $u$.
 You might remember that derivative of $cos(x)$ is $sin(x)$, so, following the chain rule, we simply scale $cos(v_2)$ by $\dot v_2$.&lt;/p&gt;
@@ -133,7 +133,7 @@ Say, we begin executing $P$ from the state where $x = 0$.
 At the end of the execution, we will get a state
 where $y = 1$, and $\dot y = 0$.&lt;/p&gt;
 
-&lt;p&gt;Let’s step through the program, one instruction at a time, maintaining both copies of the variables at every point along the way.&lt;/p&gt;
+&lt;p&gt;Let’s step through the program one instruction at a time, maintaining both copies of the variables at every point along the way.&lt;/p&gt;
 
 &lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
 \begin{align*}
