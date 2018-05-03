@@ -86,7 +86,7 @@ y &\gets v_1 + v_2
 <p>If you remember your calculus, the partial derivative of a function $\frac{\partial f}{\partial x}$ is essentially the rate of change of the output $y$ as $x$ changes.
 For our function $f$,</p>
 
-<script type="math/tex; mode=display">\frac{\partial f}{\partial x}(x) = 2x + sin(x)</script>
+<script type="math/tex; mode=display">\frac{\partial f}{\partial x}(x) = 2x - 2x \times sin(x)</script>
 
 <p>Notice that  $\frac{\partial f}{\partial x}(0) = 0$,
 since  $x = 0$ is a <em>stationary point</em>, so the rate of change at that point is 0.</p>
@@ -141,14 +141,14 @@ we have</p>
 
 <script type="math/tex; mode=display">\partial\textit{post}(v_1 \gets v_2 \times v_3, s) \triangleq s[v_1 \mapsto s(v_2) \times s(v_3)][\dot v_1 \mapsto \dot v_2 \times v_3 + v_2 \times \dot v_3]</script>
 
-<p>In other words, the rate of change of $v_1$ w.r.t. $x$ is the rate of change of $v_2$, scaled by $v_1$, plus the rate of change of $v_3$, scaled by $v_2$.</p>
+<p>In other words, the rate of change of $v_1$ w.r.t. $x$ is the rate of change of $v_2$, scaled by $v_3$, plus the rate of change of $v_3$, scaled by $v_2$.</p>
 
-<p><strong>Trignometric functions</strong> For cosine, we have</p>
+<p><strong>Trigonometric functions</strong> For cosine, we have</p>
 
-<script type="math/tex; mode=display">\partial\textit{post}(v_1 \gets cos(v_2), s) \triangleq s[v \mapsto cos(s(v_2))] [\dot v \mapsto \dot v_2 \times sin(s(v_2))]</script>
+<script type="math/tex; mode=display">\partial\textit{post}(v_1 \gets cos(v_2), s) \triangleq s[v \mapsto cos(s(v_2))] [\dot v \mapsto \dot v_2 \times - sin(s(v_2))]</script>
 
 <p>This follows from the <em>chain rule</em>, which says that the rate of change of $f(u)$ is the rate of change of $f$ scaled by the rate of change of its argument $u$.
-You might remember that derivative of $cos(x)$ is $sin(x)$, so, following the chain rule, we simply scale $cos(v_2)$ by $\dot v_2$.</p>
+You might remember that the derivative of $cos(x)$ is $-sin(x)$, so, following the chain rule, we simply scale $-sin(v_2)$ by $\dot v_2$.</p>
 
 <h2 id="example-continued">Example continued</h2>
 
@@ -174,6 +174,8 @@ y &\gets v_1 + v_2\\
 <h2 id="notes">Notes</h2>
 
 <p>I covered the simpler case of forward differentiation, which proceeds by executing the program in a forward manner. For functions with more than one input, it is more efficient to perform backward differentiation, which the popular <em><a href="https://en.wikipedia.org/wiki/Backpropagation">backpropagation</a></em> algorithm is an instance of. Adapting the above semantics to backpropagation is not hard, it’s just messier, as we have to execute the program forward and then backward. Therefore, I decided to illustrate the forward mode only. For more information, I encourage you to read the excellent survey by <a href="https://arxiv.org/abs/1502.05767">Baydin et al.</a>, which heavily influenced my presentation.</p>
+
+<p><em>Thanks for Kartik Agaram, Ben Liblit, and David Cabana for catching typos and errors.</em></p>
 
 </article>
 
