@@ -4,7 +4,7 @@
  <title></title>
  <link href="http://barghouthi.github.io/atom.xml" rel="self"/>
  <link href="http://barghouthi.github.io/"/>
- <updated>2018-05-03T08:27:23-05:00</updated>
+ <updated>2018-05-11T11:16:16-05:00</updated>
  <id>http://barghouthi.github.io</id>
  <author>
    <name>Aws Albarghouthi</name>
@@ -150,7 +150,7 @@ y &amp;\gets v_1 + v_2\\
 
 &lt;p&gt;I covered the simpler case of forward differentiation, which proceeds by executing the program in a forward manner. For functions with more than one input, it is more efficient to perform backward differentiation, which the popular &lt;em&gt;&lt;a href=&quot;https://en.wikipedia.org/wiki/Backpropagation&quot;&gt;backpropagation&lt;/a&gt;&lt;/em&gt; algorithm is an instance of. Adapting the above semantics to backpropagation is not hard, it’s just messier, as we have to execute the program forward and then backward. Therefore, I decided to illustrate the forward mode only. For more information, I encourage you to read the excellent survey by &lt;a href=&quot;https://arxiv.org/abs/1502.05767&quot;&gt;Baydin et al.&lt;/a&gt;, which heavily influenced my presentation.&lt;/p&gt;
 
-&lt;p&gt;&lt;em&gt;Thanks for Kartik Agaram, Ben Liblit, and David Cabana for catching typos and errors.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Thanks to Kartik Agaram, Ben Liblit, and David Cabana for catching typos and errors.&lt;/em&gt;&lt;/p&gt;
 </content>
  </entry>
  

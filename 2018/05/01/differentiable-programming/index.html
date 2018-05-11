@@ -86,7 +86,7 @@ y &\gets v_1 + v_2
 <p>If you remember your calculus, the partial derivative of a function $\frac{\partial f}{\partial x}$ is essentially the rate of change of the output $y$ as $x$ changes.
 For our function $f$,</p>
 
-<script type="math/tex; mode=display">\frac{\partial f}{\partial x}(x) = 2x - 2x \times sin(x^2)</script>
+<script type="math/tex; mode=display">\frac{\partial f}{\partial x}(x) = 2x - 2x \times sin(x)</script>
 
 <p>Notice that  $\frac{\partial f}{\partial x}(0) = 0$,
 since  $x = 0$ is a <em>stationary point</em>, so the rate of change at that point is 0.</p>
@@ -175,7 +175,7 @@ y &\gets v_1 + v_2\\
 
 <p>I covered the simpler case of forward differentiation, which proceeds by executing the program in a forward manner. For functions with more than one input, it is more efficient to perform backward differentiation, which the popular <em><a href="https://en.wikipedia.org/wiki/Backpropagation">backpropagation</a></em> algorithm is an instance of. Adapting the above semantics to backpropagation is not hard, it’s just messier, as we have to execute the program forward and then backward. Therefore, I decided to illustrate the forward mode only. For more information, I encourage you to read the excellent survey by <a href="https://arxiv.org/abs/1502.05767">Baydin et al.</a>, which heavily influenced my presentation.</p>
 
-<p><em>Thanks for Kartik Agaram, Ben Liblit, and David Cabana for catching typos and errors.</em></p>
+<p><em>Thanks to Kartik Agaram, Ben Liblit, and David Cabana for catching typos and errors.</em></p>
 
 </article>
 
