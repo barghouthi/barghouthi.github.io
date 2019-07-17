@@ -4,7 +4,7 @@
  <title></title>
  <link href="https://barghouthi.github.io/atom.xml" rel="self"/>
  <link href="https://barghouthi.github.io/"/>
- <updated>2019-07-17T11:41:19-05:00</updated>
+ <updated>2019-07-17T11:47:12-05:00</updated>
  <id>https://barghouthi.github.io</id>
  <author>
    <name>Aws Albarghouthi</name>
@@ -120,14 +120,23 @@ Depending on what we choose, we will &lt;em&gt;incur&lt;/em&gt; a different prob
 Say we pick &lt;code class=&quot;highlighter-rouge&quot;&gt;2*x&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;3*x&lt;/code&gt; for &lt;code class=&quot;highlighter-rouge&quot;&gt;?1&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;?2&lt;/code&gt;.
 We get the following program:&lt;/p&gt;
 
-&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;f_synth_inst&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;f_synth_inst1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
     &lt;span class=&quot;n&quot;&gt;y&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pick&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;value&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
     &lt;span class=&quot;n&quot;&gt;w&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;
     &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;y&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;w&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;This satisfies our postcondition — that $y \geq  x$ — but with a failure probability of $2/3$, higher than our goal of $1/3$.
-The synthesizer should return the program &lt;code class=&quot;highlighter-rouge&quot;&gt;f_nondet&lt;/code&gt; above,
+&lt;p&gt;This satisfies our postcondition — that $y \geq  x$ — but with a failure probability of $2/3$, higher than our goal of $1/3$.&lt;/p&gt;
+
+&lt;p&gt;Now check out this other instantiation where we set &lt;code class=&quot;highlighter-rouge&quot;&gt;?1&lt;/code&gt; to 0 and &lt;code class=&quot;highlighter-rouge&quot;&gt;?2&lt;/code&gt; to &lt;code class=&quot;highlighter-rouge&quot;&gt;3*x&lt;/code&gt;:&lt;/p&gt;
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;f_synth_inst2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;y&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pick&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;value&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;w&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;y&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;w&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;This has a 0 probability of failure: &lt;code class=&quot;highlighter-rouge&quot;&gt;y&lt;/code&gt; always is between &lt;code class=&quot;highlighter-rouge&quot;&gt;0&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;3*x&lt;/code&gt; with a probability of 1. But it does not satisfy the postcondition, since &lt;code class=&quot;highlighter-rouge&quot;&gt;y&lt;/code&gt; may very well be less than &lt;code class=&quot;highlighter-rouge&quot;&gt;x&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;The synthesizer should return the program &lt;code class=&quot;highlighter-rouge&quot;&gt;f_nondet&lt;/code&gt; above,
 which sets &lt;code class=&quot;highlighter-rouge&quot;&gt;?1&lt;/code&gt; to &lt;code class=&quot;highlighter-rouge&quot;&gt;x&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;?2&lt;/code&gt; to &lt;code class=&quot;highlighter-rouge&quot;&gt;3*x&lt;/code&gt;.&lt;/p&gt;
 
 &lt;h2 id=&quot;synthesis-problem&quot;&gt;Synthesis problem&lt;/h2&gt;

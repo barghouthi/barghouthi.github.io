@@ -145,14 +145,23 @@ Depending on what we choose, we will <em>incur</em> a different probability of f
 Say we pick <code class="highlighter-rouge">2*x</code> and <code class="highlighter-rouge">3*x</code> for <code class="highlighter-rouge">?1</code> and <code class="highlighter-rouge">?2</code>.
 We get the following program:</p>
 
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">f_synth_inst</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">f_synth_inst1</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
     <span class="n">y</span> <span class="o">=</span> <span class="n">pick</span> <span class="n">a</span> <span class="n">value</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">2</span><span class="o">*</span><span class="n">x</span><span class="p">,</span><span class="o">...</span><span class="p">,</span><span class="mi">3</span><span class="o">*</span><span class="n">x</span><span class="p">]</span>
     <span class="n">w</span> <span class="o">=</span> <span class="mi">2</span><span class="o">/</span><span class="mi">3</span>
     <span class="k">return</span> <span class="n">y</span><span class="p">,</span><span class="n">w</span>
 </code></pre></div></div>
 
-<p>This satisfies our postcondition — that $y \geq  x$ — but with a failure probability of $2/3$, higher than our goal of $1/3$.
-The synthesizer should return the program <code class="highlighter-rouge">f_nondet</code> above,
+<p>This satisfies our postcondition — that $y \geq  x$ — but with a failure probability of $2/3$, higher than our goal of $1/3$.</p>
+
+<p>Now check out this other instantiation where we set <code class="highlighter-rouge">?1</code> to 0 and <code class="highlighter-rouge">?2</code> to <code class="highlighter-rouge">3*x</code>:</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">f_synth_inst2</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">pick</span> <span class="n">a</span> <span class="n">value</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="o">...</span><span class="p">,</span><span class="mi">3</span><span class="o">*</span><span class="n">x</span><span class="p">]</span>
+    <span class="n">w</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">return</span> <span class="n">y</span><span class="p">,</span><span class="n">w</span>
+</code></pre></div></div>
+<p>This has a 0 probability of failure: <code class="highlighter-rouge">y</code> always is between <code class="highlighter-rouge">0</code> and <code class="highlighter-rouge">3*x</code> with a probability of 1. But it does not satisfy the postcondition, since <code class="highlighter-rouge">y</code> may very well be less than <code class="highlighter-rouge">x</code>.</p>
+
+<p>The synthesizer should return the program <code class="highlighter-rouge">f_nondet</code> above,
 which sets <code class="highlighter-rouge">?1</code> to <code class="highlighter-rouge">x</code> and <code class="highlighter-rouge">?2</code> to <code class="highlighter-rouge">3*x</code>.</p>
 
 <h2 id="synthesis-problem">Synthesis problem</h2>
