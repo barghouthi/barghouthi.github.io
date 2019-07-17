@@ -4,7 +4,7 @@
  <title></title>
  <link href="https://barghouthi.github.io/atom.xml" rel="self"/>
  <link href="https://barghouthi.github.io/"/>
- <updated>2019-07-17T11:48:39-05:00</updated>
+ <updated>2019-07-17T11:56:50-05:00</updated>
  <id>https://barghouthi.github.io</id>
  <author>
    <name>Aws Albarghouthi</name>
@@ -49,7 +49,7 @@ Take this program:&lt;/p&gt;
 
 &lt;h2 id=&quot;randomized-algorithm-example&quot;&gt;Randomized algorithm example&lt;/h2&gt;
 
-&lt;p&gt;Let’s now look at a very simple randomized program, where &lt;code class=&quot;highlighter-rouge&quot;&gt;uniform(a,b)&lt;/code&gt; returns a sample from the uniform distribution between values &lt;code class=&quot;highlighter-rouge&quot;&gt;a&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;b&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Let’s now look at a very simple randomized program, where &lt;code class=&quot;highlighter-rouge&quot;&gt;uniform(a,b)&lt;/code&gt; returns a sample from the uniform distribution between the values &lt;code class=&quot;highlighter-rouge&quot;&gt;a&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;b&lt;/code&gt;.&lt;/p&gt;
 
 &lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
     &lt;span class=&quot;n&quot;&gt;y&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;uniform&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
@@ -83,13 +83,14 @@ In our example, the proof relies on the obvious fact that $y \geq x$ with a prob
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;We now have a non-probabilistic program:
-&lt;code class=&quot;highlighter-rouge&quot;&gt;y&lt;/code&gt;  gets an arbitrary (non-deterministic) value between &lt;code class=&quot;highlighter-rouge&quot;&gt;x&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;3*x&lt;/code&gt;;
-but we know that this may not be true with a probability of &lt;code class=&quot;highlighter-rouge&quot;&gt;1/3&lt;/code&gt;, which is stored in a new &lt;em&gt;ghost&lt;/em&gt; variable &lt;code class=&quot;highlighter-rouge&quot;&gt;w&lt;/code&gt;.
+we force 
+&lt;code class=&quot;highlighter-rouge&quot;&gt;y&lt;/code&gt; to receive an arbitrary (non-deterministic) value between &lt;code class=&quot;highlighter-rouge&quot;&gt;x&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;3*x&lt;/code&gt;;
+but we know that this may not be true with a probability of &lt;code class=&quot;highlighter-rouge&quot;&gt;1/3&lt;/code&gt;, so we store this fact in a new &lt;em&gt;ghost&lt;/em&gt; variable &lt;code class=&quot;highlighter-rouge&quot;&gt;w&lt;/code&gt;.
 The transformation relies on the following insight:&lt;/p&gt;
 
 &lt;ol&gt;
-  &lt;li&gt;make whatever assumptions you want&lt;/li&gt;
-  &lt;li&gt;&lt;em&gt;but&lt;/em&gt; remember the probability with which your assumptions might fail&lt;/li&gt;
+  &lt;li&gt;make whatever assumptions you want about the value of &lt;code class=&quot;highlighter-rouge&quot;&gt;y&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;em&gt;but&lt;/em&gt; remember the probability with which your assumption might fail&lt;/li&gt;
 &lt;/ol&gt;
 
 &lt;p&gt;So now we can prove the above Hoare triple &lt;script type=&quot;math/tex&quot;&gt;\vdash_{\color{red}{1/3}} \{x &gt; 0\}  ~f(x)~ \{y \geq x\}&lt;/script&gt;  using the transformed, non-deterministic program instead:&lt;/p&gt;
@@ -116,7 +117,8 @@ Depending on what we choose, we will &lt;em&gt;incur&lt;/em&gt; a different prob
 
 &lt;p&gt;&lt;img src=&quot;https://barghouthi.github.io/assets/probability2.png&quot; alt=&quot;Probability density function of axiom family&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;So now you can use your favorite program synthesis engine to synthesize values for the unknowns such that &lt;script type=&quot;math/tex&quot;&gt;y \geq x&lt;/script&gt; and $w \leq 1/3$. 
+&lt;p&gt;So now you can use your favorite program synthesis engine to synthesize values for the unknowns such that the postcondition &lt;script type=&quot;math/tex&quot;&gt;y \geq x&lt;/script&gt; is true and
+and the failure probability $w \leq 1/3$. 
 Say we pick &lt;code class=&quot;highlighter-rouge&quot;&gt;2*x&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;3*x&lt;/code&gt; for &lt;code class=&quot;highlighter-rouge&quot;&gt;?1&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;?2&lt;/code&gt;.
 We get the following program:&lt;/p&gt;
 
