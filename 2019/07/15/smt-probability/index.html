@@ -62,7 +62,7 @@ Take this program:</p>
     <span class="k">return</span> <span class="n">y</span>
 </code></pre></div></div>
 
-<p>If we’re working with infinite-precision integers, the following Hoare triple is valid—a positive input results in a positive output.</p>
+<p>If we’re working with infinite-precision integers, the following Hoare triple is valid — a positive input results in a positive output.</p>
 
 <script type="math/tex; mode=display">\vdash \{x > 0\}  ~f(x)~ \{y > 0\}</script>
 
@@ -101,7 +101,7 @@ In our example, the proof relies on the obvious fact that $y \geq x$ with a prob
 
 <p>If we know this fact, we can transform the program into a non-deterministic version that <em>tracks probability of failure</em>:</p>
 
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">f_new</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">f_nondet</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
     <span class="n">y</span> <span class="o">=</span> <span class="n">pick</span> <span class="n">a</span> <span class="n">value</span> <span class="ow">in</span> <span class="p">[</span><span class="n">x</span><span class="p">,</span><span class="o">...</span><span class="p">,</span><span class="mi">3</span><span class="o">*</span><span class="n">x</span><span class="p">]</span>
     <span class="n">w</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="mi">3</span>
     <span class="k">return</span> <span class="n">y</span><span class="p">,</span><span class="n">w</span>
@@ -119,7 +119,7 @@ The transformation relies on the following insight:</p>
 
 <p>So now we can prove the above Hoare triple <script type="math/tex">\vdash_{\color{red}{1/3}} \{x > 0\}  ~f(x)~ \{y \geq x\}</script>  using the transformed, non-deterministic program instead:</p>
 
-<script type="math/tex; mode=display">(\underbrace{x > 0}_{\text{pre}} \land \underbrace{x \leq y \leq 3x  \land w = 1/3}_{\text{encoding of } f_\textit{new}}) \Longrightarrow (\underbrace{y > x}_{\text{post}} \land \underbrace{w \leq \color{red}{1/3}}_{\text{failure prob.}})</script>
+<script type="math/tex; mode=display">(\underbrace{x > 0}_{\text{pre}} \land \underbrace{x \leq y \leq 3x  \land w = 1/3}_{\text{encoding of } f_\textit{nondet}}) \Longrightarrow (\underbrace{y \geq x}_{\text{post}} \land \underbrace{w \leq \color{red}{1/3}}_{\text{failure prob.}})</script>
 
 <h2 id="picking-the-right-axioms">Picking the right axioms</h2>
 
@@ -128,7 +128,7 @@ But in general, we want to automatically discover the right axiom to get the pro
 Calvin’s insight was that we can see this as a <em>program synthesis</em> problem!</p>
 
 <p>The idea is to use an <em>axiom family</em> and synthesize the appropriate axiom from this family.
-Check out this parameterized version of <code class="highlighter-rouge">f_new</code> above:</p>
+Check out this parameterized version of <code class="highlighter-rouge">f_nondet</code> above:</p>
 
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">f_synth</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
     <span class="n">y</span> <span class="o">=</span> <span class="n">pick</span> <span class="n">a</span> <span class="n">value</span> <span class="ow">in</span> <span class="p">[</span><span class="err">?</span><span class="mi">1</span><span class="p">,</span><span class="o">...</span><span class="p">,</span><span class="err">?</span><span class="mi">2</span><span class="p">]</span>
@@ -137,25 +137,43 @@ Check out this parameterized version of <code class="highlighter-rouge">f_new</c
 </code></pre></div></div>
 
 <p><code class="highlighter-rouge">?1</code> and <code class="highlighter-rouge">?2</code> are two unknown expressions that we want to synthesize; they define the assumption we are making.
-Depending on what we choose, we will <em>incur</em> a different probability of failure <code class="highlighter-rouge">w</code>.
-So now you can use your favorite program synthesis engine to synthesize values for the unknowns such that <script type="math/tex">y \geq x</script> and $w \leq 1/3$.</p>
+Depending on what we choose, we will <em>incur</em> a different probability of failure <code class="highlighter-rouge">w</code>.</p>
 
 <p><img src="https://barghouthi.github.io/assets/probability2.png" alt="Probability density function of axiom family" /></p>
 
-<p>Say we pick <code class="highlighter-rouge">2*x</code> and <code class="highlighter-rouge">3*x</code> for <code class="highlighter-rouge">?1</code> and <code class="highlighter-rouge">?2</code>.
+<p>So now you can use your favorite program synthesis engine to synthesize values for the unknowns such that <script type="math/tex">y \geq x</script> and $w \leq 1/3$. 
+Say we pick <code class="highlighter-rouge">2*x</code> and <code class="highlighter-rouge">3*x</code> for <code class="highlighter-rouge">?1</code> and <code class="highlighter-rouge">?2</code>.
 We get the following program:</p>
 
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">f_synth</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">f_synth_inst</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
     <span class="n">y</span> <span class="o">=</span> <span class="n">pick</span> <span class="n">a</span> <span class="n">value</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">2</span><span class="o">*</span><span class="n">x</span><span class="p">,</span><span class="o">...</span><span class="p">,</span><span class="mi">3</span><span class="o">*</span><span class="n">x</span><span class="p">]</span>
     <span class="n">w</span> <span class="o">=</span> <span class="mi">2</span><span class="o">/</span><span class="mi">3</span>
     <span class="k">return</span> <span class="n">y</span><span class="p">,</span><span class="n">w</span>
 </code></pre></div></div>
 
-<p>This satisfies our postcondition—that $y \geq  x$—but with a failure probability of $2/3$ (higher than our goal of $1/3$).</p>
+<p>This satisfies our postcondition — that $y \geq  x$ — but with a failure probability of $2/3$, higher than our goal of $1/3$.
+The synthesizer should return the program <code class="highlighter-rouge">f_nondet</code> above,
+which sets <code class="highlighter-rouge">?1</code> to <code class="highlighter-rouge">x</code> and <code class="highlighter-rouge">?2</code> to <code class="highlighter-rouge">3*x</code>.</p>
+
+<h2 id="synthesis-problem">Synthesis problem</h2>
+
+<p>To solve the synthesis problem above with an SMT solver,
+we encode the problem in the form of <script type="math/tex">\exists.\forall .\varphi</script>:</p>
+
+<script type="math/tex; mode=display">\exists ?_1, ?_2 . \forall x,y,z,w .</script>
+
+<script type="math/tex; mode=display">(\underbrace{x > 0}_{\text{pre}} \land \underbrace{?_1 \leq y \leq ?_2  \land w = 1 - (?_2-?_1)/3x }_{\text{encoding of } f_\textit{synth}}) \Longrightarrow (\underbrace{y \geq x}_{\text{post}} \land \underbrace{w \leq \color{red}{1/3}}_{\text{failure prob.}})</script>
+
+<p>The idea is we want to find ($\exists$) solutions to the unknowns $?_1$ and $?_2$
+such that for any execution ($\forall$) where $x&gt;0$ the postcondition holds and the failure probability is no more than $1/3$.</p>
 
 <h2 id="conclusion">Conclusion</h2>
 
-<p>Our <a href="http://pages.cs.wisc.edu/~aws/papers/popl19.pdf">paper</a> gives a soundness-police-compliant view of this idea. We manage to automatically prove accuracy properties of some sophisticated algorithms from differential privacy.
+<p>That’s it. We’ve thrown probability away. 
+Now you can reason about randomized algorithms with first-order logic.
+But that’s not to say that solving the resulting formulas is easy!</p>
+
+<p>Our <a href="http://pages.cs.wisc.edu/~aws/papers/popl19.pdf">paper</a> gives a full-blow, soundness-police-compliant view of this idea – and a lot of implementation details because some of these formulas involve non-linear arithmetic. We manage to automatically prove accuracy properties of some sophisticated algorithms from the differential privacy literature.
 It’s really fascinating how far we can take SMT solvers.</p>
 <div class="footnotes">
   <ol>
