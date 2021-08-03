@@ -41,7 +41,7 @@
   
     <time datetime="2019-07-15T00:00:00-05:00" class="post-date">Jul  15, 2019</time><br>
   
-    <hr></hr>
+  <br>
   <p>The unexpected rise of SAT and SMT solvers has revolutionized software verification, both the automated and deductive flavors.
 Simply, you encode program semantics as logical circuits and ask the SMT solver questions about them. How elegant.
 But what happens when your program is randomized? Good luck! The first-order world of SMT solvers does not have the ingredients to sustain your stochastic existence. Go find another home.</p>
@@ -64,26 +64,26 @@ Take this program:</p>
 
 <p>If we’re working with infinite-precision integers, the following Hoare triple is valid — a positive input results in a positive output.</p>
 
-<script type="math/tex; mode=display">\vdash \{x > 0\}  ~f(x)~ \{y > 0\}</script>
+\[\vdash \{x &gt; 0\}  ~f(x)~ \{y &gt; 0\}\]
 
 <p>To formally prove that this Hoare triple holds, we encode the precondition, postcondition, and program semantics as the following formula:</p>
 
-<script type="math/tex; mode=display">(\underbrace{x > 0}_{\text{pre}} \land \underbrace{z = x + 1 \land y = z * 2}_{\text{encoding of } f \ (\text{strongest post})}) \Longrightarrow \underbrace{y > 0}_{\text{post}}</script>
+\[(\underbrace{x &gt; 0}_{\text{pre}} \land \underbrace{z = x + 1 \land y = z * 2}_{\text{encoding of } f \ (\text{strongest post})}) \Longrightarrow \underbrace{y &gt; 0}_{\text{post}}\]
 
 <p>If the SMT solver tells you that the formula is valid, then the Hoare triple is valid. If it’s not valid, the SMT solver will give you a counterexample.</p>
 
 <h2 id="randomized-algorithm-example">Randomized algorithm example</h2>
 
-<p>Let’s now look at a very simple randomized program, where <code class="highlighter-rouge">uniform(a,b)</code> returns a sample from the uniform distribution between the values <code class="highlighter-rouge">a</code> and <code class="highlighter-rouge">b</code>.</p>
+<p>Let’s now look at a very simple randomized program, where <code class="language-plaintext highlighter-rouge">uniform(a,b)</code> returns a sample from the uniform distribution between the values <code class="language-plaintext highlighter-rouge">a</code> and <code class="language-plaintext highlighter-rouge">b</code>.</p>
 
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
     <span class="n">y</span> <span class="o">=</span> <span class="n">uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="o">*</span><span class="n">x</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">y</span>
 </code></pre></div></div>
 
-<p>Say we want to prove the following (probabilistic) Hoare triple:<sup id="fnref:union-bound"><a href="#fn:union-bound" class="footnote">1</a></sup></p>
+<p>Say we want to prove the following (probabilistic) Hoare triple:<sup id="fnref:union-bound" role="doc-noteref"><a href="#fn:union-bound" class="footnote">1</a></sup></p>
 
-<script type="math/tex; mode=display">\vdash_{\color{red}{1/3}} \{x > 0\}  ~f(x)~ \{y \geq x\}</script>
+\[\vdash_{\color{red}{1/3}} \{x &gt; 0\}  ~f(x)~ \{y \geq x\}\]
 
 <p>Let’s unpack this: If $x$ is positive, then $f$ returns a value of $y \geq x$, <em>but</em> there is at most a $\color{red}{1/3}$ probability of failing to satisfy the postcondition.</p>
 
@@ -102,25 +102,25 @@ In our example, the proof relies on the obvious fact that $y \geq x$ with a prob
 <p>If we know this fact, we can transform the program into a non-deterministic version that <em>tracks probability of failure</em>:</p>
 
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">f_nondet</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-    <span class="n">y</span> <span class="o">=</span> <span class="n">pick</span> <span class="n">a</span> <span class="n">value</span> <span class="ow">in</span> <span class="p">[</span><span class="n">x</span><span class="p">,</span><span class="o">...</span><span class="p">,</span><span class="mi">3</span><span class="o">*</span><span class="n">x</span><span class="p">]</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">pick</span> <span class="n">a</span> <span class="n">value</span> <span class="ow">in</span> <span class="p">[</span><span class="n">x</span><span class="p">,...,</span><span class="mi">3</span><span class="o">*</span><span class="n">x</span><span class="p">]</span>
     <span class="n">w</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="mi">3</span>
     <span class="k">return</span> <span class="n">y</span><span class="p">,</span><span class="n">w</span>
 </code></pre></div></div>
 
 <p>We now have a non-probabilistic program:
 we force 
-<code class="highlighter-rouge">y</code> to receive an arbitrary (non-deterministic) value between <code class="highlighter-rouge">x</code> and <code class="highlighter-rouge">3*x</code>;
-but we know that this may not be true with a probability of <code class="highlighter-rouge">1/3</code>, so we store this fact in a new <em>ghost</em> variable <code class="highlighter-rouge">w</code>.
+<code class="language-plaintext highlighter-rouge">y</code> to receive an arbitrary (non-deterministic) value between <code class="language-plaintext highlighter-rouge">x</code> and <code class="language-plaintext highlighter-rouge">3*x</code>;
+but we know that this may not be true with a probability of <code class="language-plaintext highlighter-rouge">1/3</code>, so we store this fact in a new <em>ghost</em> variable <code class="language-plaintext highlighter-rouge">w</code>.
 The transformation relies on the following insight:</p>
 
 <ol>
-  <li>make whatever assumptions you want about the value of <code class="highlighter-rouge">y</code></li>
+  <li>make whatever assumptions you want about the value of <code class="language-plaintext highlighter-rouge">y</code></li>
   <li><em>but</em> remember the probability with which your assumptions might fail</li>
 </ol>
 
-<p>So now we can prove the above Hoare triple <script type="math/tex">\vdash_{\color{red}{1/3}} \{x > 0\}  ~f(x)~ \{y \geq x\}</script>  using the transformed, non-deterministic program instead:</p>
+<p>So now we can prove the above Hoare triple \(\vdash_{\color{red}{1/3}} \{x &gt; 0\}  ~f(x)~ \{y \geq x\}\)  using the transformed, non-deterministic program instead:</p>
 
-<script type="math/tex; mode=display">(\underbrace{x > 0}_{\text{pre}} \land \underbrace{x \leq y \leq 3x  \land w = 1/3}_{\text{encoding of } f_\textit{nondet}}) \Longrightarrow (\underbrace{y \geq x}_{\text{post}} \land \underbrace{w \leq \color{red}{1/3}}_{\text{failure prob.}})</script>
+\[(\underbrace{x &gt; 0}_{\text{pre}} \land \underbrace{x \leq y \leq 3x  \land w = 1/3}_{\text{encoding of } f_\textit{nondet}}) \Longrightarrow (\underbrace{y \geq x}_{\text{post}} \land \underbrace{w \leq \color{red}{1/3}}_{\text{failure prob.}})\]
 
 <h2 id="picking-the-right-axioms">Picking the right axioms</h2>
 
@@ -129,57 +129,57 @@ But, in general, we want to automatically discover the right axiom to get the pr
 Calvin’s insight was that we can see this as a <em>program synthesis</em> problem!</p>
 
 <p>The idea is to use an <em>axiom family</em> and synthesize the appropriate axiom from this family.
-Check out this parameterized version of <code class="highlighter-rouge">f_nondet</code> above:</p>
+Check out this parameterized version of <code class="language-plaintext highlighter-rouge">f_nondet</code> above:</p>
 
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">f_synth</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-    <span class="n">y</span> <span class="o">=</span> <span class="n">pick</span> <span class="n">a</span> <span class="n">value</span> <span class="ow">in</span> <span class="p">[</span><span class="err">?</span><span class="mi">1</span><span class="p">,</span><span class="o">...</span><span class="p">,</span><span class="err">?</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">pick</span> <span class="n">a</span> <span class="n">value</span> <span class="ow">in</span> <span class="p">[</span><span class="err">?</span><span class="mi">1</span><span class="p">,...,</span><span class="err">?</span><span class="mi">2</span><span class="p">]</span>
     <span class="n">w</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="p">(</span><span class="err">?</span><span class="mi">2</span> <span class="o">-</span> <span class="err">?</span><span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">3</span><span class="o">*</span><span class="n">x</span>
     <span class="k">return</span> <span class="n">y</span><span class="p">,</span><span class="n">w</span>
 </code></pre></div></div>
 
-<p><code class="highlighter-rouge">?1</code> and <code class="highlighter-rouge">?2</code> are two unknown expressions that we want to synthesize; they define the assumption we are making.
-Depending on what we choose, we will <em>incur</em> a different probability of failure <code class="highlighter-rouge">w</code>.</p>
+<p><code class="language-plaintext highlighter-rouge">?1</code> and <code class="language-plaintext highlighter-rouge">?2</code> are two unknown expressions that we want to synthesize; they define the assumption we are making.
+Depending on what we choose, we will <em>incur</em> a different probability of failure <code class="language-plaintext highlighter-rouge">w</code>.</p>
 
 <p><img src="https://barghouthi.github.io/assets/probability2.png" alt="Probability density function of axiom family" /></p>
 
-<p>So now you can use your favorite program synthesis engine to synthesize values for the unknowns such that the postcondition <script type="math/tex">y \geq x</script> is true and
+<p>So now you can use your favorite program synthesis engine to synthesize values for the unknowns such that the postcondition \(y \geq x\) is true and
 and the failure probability $w \leq 1/3$. 
-Say we pick <code class="highlighter-rouge">2*x</code> and <code class="highlighter-rouge">3*x</code> for <code class="highlighter-rouge">?1</code> and <code class="highlighter-rouge">?2</code>.
+Say we pick <code class="language-plaintext highlighter-rouge">2*x</code> and <code class="language-plaintext highlighter-rouge">3*x</code> for <code class="language-plaintext highlighter-rouge">?1</code> and <code class="language-plaintext highlighter-rouge">?2</code>.
 We get the following program:</p>
 
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">f_synth_inst1</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-    <span class="n">y</span> <span class="o">=</span> <span class="n">pick</span> <span class="n">a</span> <span class="n">value</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">2</span><span class="o">*</span><span class="n">x</span><span class="p">,</span><span class="o">...</span><span class="p">,</span><span class="mi">3</span><span class="o">*</span><span class="n">x</span><span class="p">]</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">pick</span> <span class="n">a</span> <span class="n">value</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">2</span><span class="o">*</span><span class="n">x</span><span class="p">,...,</span><span class="mi">3</span><span class="o">*</span><span class="n">x</span><span class="p">]</span>
     <span class="n">w</span> <span class="o">=</span> <span class="mi">2</span><span class="o">/</span><span class="mi">3</span>
     <span class="k">return</span> <span class="n">y</span><span class="p">,</span><span class="n">w</span>
 </code></pre></div></div>
 
 <p>This satisfies our postcondition — that $y \geq  x$ — but with a failure probability of $2/3$, higher than our goal of $1/3$.</p>
 
-<p>Now check out this other instantiation where we set <code class="highlighter-rouge">?1</code> to <code class="highlighter-rouge">0</code> and <code class="highlighter-rouge">?2</code> to <code class="highlighter-rouge">3*x</code>:</p>
+<p>Now check out this other instantiation where we set <code class="language-plaintext highlighter-rouge">?1</code> to <code class="language-plaintext highlighter-rouge">0</code> and <code class="language-plaintext highlighter-rouge">?2</code> to <code class="language-plaintext highlighter-rouge">3*x</code>:</p>
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">f_synth_inst2</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-    <span class="n">y</span> <span class="o">=</span> <span class="n">pick</span> <span class="n">a</span> <span class="n">value</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="o">...</span><span class="p">,</span><span class="mi">3</span><span class="o">*</span><span class="n">x</span><span class="p">]</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">pick</span> <span class="n">a</span> <span class="n">value</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">0</span><span class="p">,...,</span><span class="mi">3</span><span class="o">*</span><span class="n">x</span><span class="p">]</span>
     <span class="n">w</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="k">return</span> <span class="n">y</span><span class="p">,</span><span class="n">w</span>
 </code></pre></div></div>
-<p>This has a 0 probability of failure: <code class="highlighter-rouge">y</code> always is between <code class="highlighter-rouge">0</code> and <code class="highlighter-rouge">3*x</code> with a probability of 1. But it does not satisfy the postcondition, since <code class="highlighter-rouge">y</code> may very well be less than <code class="highlighter-rouge">x</code>.</p>
+<p>This has a 0 probability of failure: <code class="language-plaintext highlighter-rouge">y</code> always is between <code class="language-plaintext highlighter-rouge">0</code> and <code class="language-plaintext highlighter-rouge">3*x</code> with a probability of 1. But it does not satisfy the postcondition, since <code class="language-plaintext highlighter-rouge">y</code> may very well be less than <code class="language-plaintext highlighter-rouge">x</code>.</p>
 
-<p>The synthesizer should return the program <code class="highlighter-rouge">f_nondet</code> above,
-which sets <code class="highlighter-rouge">?1</code> to <code class="highlighter-rouge">x</code> and <code class="highlighter-rouge">?2</code> to <code class="highlighter-rouge">3*x</code>.</p>
+<p>The synthesizer should return the program <code class="language-plaintext highlighter-rouge">f_nondet</code> above,
+which sets <code class="language-plaintext highlighter-rouge">?1</code> to <code class="language-plaintext highlighter-rouge">x</code> and <code class="language-plaintext highlighter-rouge">?2</code> to <code class="language-plaintext highlighter-rouge">3*x</code>.</p>
 
 <h2 id="synthesis-problem">Synthesis problem</h2>
 
 <p>To solve the synthesis problem above with an SMT solver,
-we encode the problem in the form of <script type="math/tex">\exists.\forall .\varphi</script>:</p>
+we encode the problem in the form of \(\exists.\forall .\varphi\):</p>
 
-<script type="math/tex; mode=display">\exists ?_1, ?_2 . \forall x,y,z,w .</script>
+\[\exists ?_1, ?_2 . \forall x,y,z,w .\]
 
-<script type="math/tex; mode=display">(\underbrace{x > 0}_{\text{pre}} \land \underbrace{?_1 \leq y \leq ?_2  \land w = 1 - (?_2-?_1)/3x }_{\text{encoding of } f_\textit{synth}}) \Longrightarrow (\underbrace{y \geq x}_{\text{post}} \land \underbrace{w \leq \color{red}{1/3}}_{\text{failure prob.}})</script>
+\[(\underbrace{x &gt; 0}_{\text{pre}} \land \underbrace{?_1 \leq y \leq ?_2  \land w = 1 - (?_2-?_1)/3x }_{\text{encoding of } f_\textit{synth}}) \Longrightarrow (\underbrace{y \geq x}_{\text{post}} \land \underbrace{w \leq \color{red}{1/3}}_{\text{failure prob.}})\]
 
 <p>The idea is we want to find ($\exists$) solutions to the unknowns $?_1$ and $?_2$
 such that for any execution ($\forall$) where $x&gt;0$ the postcondition holds and the failure probability is no more than $1/3$.</p>
 
 <p>A solution to this problem is one that sets $?_1$ to $x$ and $?_2$ to $3x$,
-resulting in the program <code class="highlighter-rouge">f_nondet</code> above, whose correctness implies the Hoare triple <script type="math/tex">\vdash_{\color{red}{1/3}} \{x > 0\}  ~f(x)~ \{y \geq x\}</script>.</p>
+resulting in the program <code class="language-plaintext highlighter-rouge">f_nondet</code> above, whose correctness implies the Hoare triple \(\vdash_{\color{red}{1/3}} \{x &gt; 0\}  ~f(x)~ \{y \geq x\}\).</p>
 
 <h2 id="conclusion">Conclusion</h2>
 
@@ -191,10 +191,10 @@ But that’s not to say that solving the resulting formulas is easy!</p>
 It’s really fascinating how far we can take SMT solvers.</p>
 
 <p><em>Thanks to Calvin Smith for comments on an earlier draft. I stole the figures from his slides.</em></p>
-<div class="footnotes">
+<div class="footnotes" role="doc-endnotes">
   <ol>
-    <li id="fn:union-bound">
-      <p>Notation from union bound logic, a probabilistic Hoare logic due to <a href="https://arxiv.org/abs/1602.05681">Barthe et al.</a> <a href="#fnref:union-bound" class="reversefootnote">&#8617;</a></p>
+    <li id="fn:union-bound" role="doc-endnote">
+      <p>Notation from union bound logic, a probabilistic Hoare logic due to <a href="https://arxiv.org/abs/1602.05681">Barthe et al.</a> <a href="#fnref:union-bound" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
     </li>
   </ol>
 </div>

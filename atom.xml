@@ -4,7 +4,7 @@
  <title></title>
  <link href="https://barghouthi.github.io/atom.xml" rel="self"/>
  <link href="https://barghouthi.github.io/"/>
- <updated>2019-07-18T09:41:03-05:00</updated>
+ <updated>2021-08-03T09:41:07-05:00</updated>
  <id>https://barghouthi.github.io</id>
  <author>
    <name>Aws Albarghouthi</name>
@@ -39,26 +39,26 @@ Take this program:&lt;/p&gt;
 
 &lt;p&gt;If we’re working with infinite-precision integers, the following Hoare triple is valid — a positive input results in a positive output.&lt;/p&gt;
 
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;\vdash \{x &gt; 0\}  ~f(x)~ \{y &gt; 0\}&lt;/script&gt;
+\[\vdash \{x &amp;gt; 0\}  ~f(x)~ \{y &amp;gt; 0\}\]
 
 &lt;p&gt;To formally prove that this Hoare triple holds, we encode the precondition, postcondition, and program semantics as the following formula:&lt;/p&gt;
 
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;(\underbrace{x &gt; 0}_{\text{pre}} \land \underbrace{z = x + 1 \land y = z * 2}_{\text{encoding of } f \ (\text{strongest post})}) \Longrightarrow \underbrace{y &gt; 0}_{\text{post}}&lt;/script&gt;
+\[(\underbrace{x &amp;gt; 0}_{\text{pre}} \land \underbrace{z = x + 1 \land y = z * 2}_{\text{encoding of } f \ (\text{strongest post})}) \Longrightarrow \underbrace{y &amp;gt; 0}_{\text{post}}\]
 
 &lt;p&gt;If the SMT solver tells you that the formula is valid, then the Hoare triple is valid. If it’s not valid, the SMT solver will give you a counterexample.&lt;/p&gt;
 
 &lt;h2 id=&quot;randomized-algorithm-example&quot;&gt;Randomized algorithm example&lt;/h2&gt;
 
-&lt;p&gt;Let’s now look at a very simple randomized program, where &lt;code class=&quot;highlighter-rouge&quot;&gt;uniform(a,b)&lt;/code&gt; returns a sample from the uniform distribution between the values &lt;code class=&quot;highlighter-rouge&quot;&gt;a&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;b&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Let’s now look at a very simple randomized program, where &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;uniform(a,b)&lt;/code&gt; returns a sample from the uniform distribution between the values &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;a&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;b&lt;/code&gt;.&lt;/p&gt;
 
 &lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
     &lt;span class=&quot;n&quot;&gt;y&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;uniform&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
     &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;y&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;Say we want to prove the following (probabilistic) Hoare triple:&lt;sup id=&quot;fnref:union-bound&quot;&gt;&lt;a href=&quot;#fn:union-bound&quot; class=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
+&lt;p&gt;Say we want to prove the following (probabilistic) Hoare triple:&lt;sup id=&quot;fnref:union-bound&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:union-bound&quot; class=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
 
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;\vdash_{\color{red}{1/3}} \{x &gt; 0\}  ~f(x)~ \{y \geq x\}&lt;/script&gt;
+\[\vdash_{\color{red}{1/3}} \{x &amp;gt; 0\}  ~f(x)~ \{y \geq x\}\]
 
 &lt;p&gt;Let’s unpack this: If $x$ is positive, then $f$ returns a value of $y \geq x$, &lt;em&gt;but&lt;/em&gt; there is at most a $\color{red}{1/3}$ probability of failing to satisfy the postcondition.&lt;/p&gt;
 
@@ -77,25 +77,25 @@ In our example, the proof relies on the obvious fact that $y \geq x$ with a prob
 &lt;p&gt;If we know this fact, we can transform the program into a non-deterministic version that &lt;em&gt;tracks probability of failure&lt;/em&gt;:&lt;/p&gt;
 
 &lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;f_nondet&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;y&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pick&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;value&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;y&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pick&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;value&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,...,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
     &lt;span class=&quot;n&quot;&gt;w&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;
     &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;y&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;w&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;We now have a non-probabilistic program:
 we force 
-&lt;code class=&quot;highlighter-rouge&quot;&gt;y&lt;/code&gt; to receive an arbitrary (non-deterministic) value between &lt;code class=&quot;highlighter-rouge&quot;&gt;x&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;3*x&lt;/code&gt;;
-but we know that this may not be true with a probability of &lt;code class=&quot;highlighter-rouge&quot;&gt;1/3&lt;/code&gt;, so we store this fact in a new &lt;em&gt;ghost&lt;/em&gt; variable &lt;code class=&quot;highlighter-rouge&quot;&gt;w&lt;/code&gt;.
+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;y&lt;/code&gt; to receive an arbitrary (non-deterministic) value between &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;x&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;3*x&lt;/code&gt;;
+but we know that this may not be true with a probability of &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;1/3&lt;/code&gt;, so we store this fact in a new &lt;em&gt;ghost&lt;/em&gt; variable &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;w&lt;/code&gt;.
 The transformation relies on the following insight:&lt;/p&gt;
 
 &lt;ol&gt;
-  &lt;li&gt;make whatever assumptions you want about the value of &lt;code class=&quot;highlighter-rouge&quot;&gt;y&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;make whatever assumptions you want about the value of &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;y&lt;/code&gt;&lt;/li&gt;
   &lt;li&gt;&lt;em&gt;but&lt;/em&gt; remember the probability with which your assumptions might fail&lt;/li&gt;
 &lt;/ol&gt;
 
-&lt;p&gt;So now we can prove the above Hoare triple &lt;script type=&quot;math/tex&quot;&gt;\vdash_{\color{red}{1/3}} \{x &gt; 0\}  ~f(x)~ \{y \geq x\}&lt;/script&gt;  using the transformed, non-deterministic program instead:&lt;/p&gt;
+&lt;p&gt;So now we can prove the above Hoare triple \(\vdash_{\color{red}{1/3}} \{x &amp;gt; 0\}  ~f(x)~ \{y \geq x\}\)  using the transformed, non-deterministic program instead:&lt;/p&gt;
 
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;(\underbrace{x &gt; 0}_{\text{pre}} \land \underbrace{x \leq y \leq 3x  \land w = 1/3}_{\text{encoding of } f_\textit{nondet}}) \Longrightarrow (\underbrace{y \geq x}_{\text{post}} \land \underbrace{w \leq \color{red}{1/3}}_{\text{failure prob.}})&lt;/script&gt;
+\[(\underbrace{x &amp;gt; 0}_{\text{pre}} \land \underbrace{x \leq y \leq 3x  \land w = 1/3}_{\text{encoding of } f_\textit{nondet}}) \Longrightarrow (\underbrace{y \geq x}_{\text{post}} \land \underbrace{w \leq \color{red}{1/3}}_{\text{failure prob.}})\]
 
 &lt;h2 id=&quot;picking-the-right-axioms&quot;&gt;Picking the right axioms&lt;/h2&gt;
 
@@ -104,57 +104,57 @@ But, in general, we want to automatically discover the right axiom to get the pr
 Calvin’s insight was that we can see this as a &lt;em&gt;program synthesis&lt;/em&gt; problem!&lt;/p&gt;
 
 &lt;p&gt;The idea is to use an &lt;em&gt;axiom family&lt;/em&gt; and synthesize the appropriate axiom from this family.
-Check out this parameterized version of &lt;code class=&quot;highlighter-rouge&quot;&gt;f_nondet&lt;/code&gt; above:&lt;/p&gt;
+Check out this parameterized version of &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;f_nondet&lt;/code&gt; above:&lt;/p&gt;
 
 &lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;f_synth&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;y&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pick&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;value&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;?&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;?&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;y&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pick&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;value&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;?&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,...,&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;?&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
     &lt;span class=&quot;n&quot;&gt;w&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;?&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;?&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;/&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;
     &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;y&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;w&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;?1&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;?2&lt;/code&gt; are two unknown expressions that we want to synthesize; they define the assumption we are making.
-Depending on what we choose, we will &lt;em&gt;incur&lt;/em&gt; a different probability of failure &lt;code class=&quot;highlighter-rouge&quot;&gt;w&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;?1&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;?2&lt;/code&gt; are two unknown expressions that we want to synthesize; they define the assumption we are making.
+Depending on what we choose, we will &lt;em&gt;incur&lt;/em&gt; a different probability of failure &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;w&lt;/code&gt;.&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;https://barghouthi.github.io/assets/probability2.png&quot; alt=&quot;Probability density function of axiom family&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;So now you can use your favorite program synthesis engine to synthesize values for the unknowns such that the postcondition &lt;script type=&quot;math/tex&quot;&gt;y \geq x&lt;/script&gt; is true and
+&lt;p&gt;So now you can use your favorite program synthesis engine to synthesize values for the unknowns such that the postcondition \(y \geq x\) is true and
 and the failure probability $w \leq 1/3$. 
-Say we pick &lt;code class=&quot;highlighter-rouge&quot;&gt;2*x&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;3*x&lt;/code&gt; for &lt;code class=&quot;highlighter-rouge&quot;&gt;?1&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;?2&lt;/code&gt;.
+Say we pick &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;2*x&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;3*x&lt;/code&gt; for &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;?1&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;?2&lt;/code&gt;.
 We get the following program:&lt;/p&gt;
 
 &lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;f_synth_inst1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;y&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pick&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;value&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;y&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pick&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;value&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,...,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
     &lt;span class=&quot;n&quot;&gt;w&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;
     &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;y&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;w&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;This satisfies our postcondition — that $y \geq  x$ — but with a failure probability of $2/3$, higher than our goal of $1/3$.&lt;/p&gt;
 
-&lt;p&gt;Now check out this other instantiation where we set &lt;code class=&quot;highlighter-rouge&quot;&gt;?1&lt;/code&gt; to &lt;code class=&quot;highlighter-rouge&quot;&gt;0&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;?2&lt;/code&gt; to &lt;code class=&quot;highlighter-rouge&quot;&gt;3*x&lt;/code&gt;:&lt;/p&gt;
+&lt;p&gt;Now check out this other instantiation where we set &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;?1&lt;/code&gt; to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;0&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;?2&lt;/code&gt; to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;3*x&lt;/code&gt;:&lt;/p&gt;
 &lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;f_synth_inst2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;y&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pick&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;value&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;y&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pick&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;value&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,...,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
     &lt;span class=&quot;n&quot;&gt;w&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;
     &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;y&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;w&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;p&gt;This has a 0 probability of failure: &lt;code class=&quot;highlighter-rouge&quot;&gt;y&lt;/code&gt; always is between &lt;code class=&quot;highlighter-rouge&quot;&gt;0&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;3*x&lt;/code&gt; with a probability of 1. But it does not satisfy the postcondition, since &lt;code class=&quot;highlighter-rouge&quot;&gt;y&lt;/code&gt; may very well be less than &lt;code class=&quot;highlighter-rouge&quot;&gt;x&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;This has a 0 probability of failure: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;y&lt;/code&gt; always is between &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;0&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;3*x&lt;/code&gt; with a probability of 1. But it does not satisfy the postcondition, since &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;y&lt;/code&gt; may very well be less than &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;x&lt;/code&gt;.&lt;/p&gt;
 
-&lt;p&gt;The synthesizer should return the program &lt;code class=&quot;highlighter-rouge&quot;&gt;f_nondet&lt;/code&gt; above,
-which sets &lt;code class=&quot;highlighter-rouge&quot;&gt;?1&lt;/code&gt; to &lt;code class=&quot;highlighter-rouge&quot;&gt;x&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;?2&lt;/code&gt; to &lt;code class=&quot;highlighter-rouge&quot;&gt;3*x&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;The synthesizer should return the program &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;f_nondet&lt;/code&gt; above,
+which sets &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;?1&lt;/code&gt; to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;x&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;?2&lt;/code&gt; to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;3*x&lt;/code&gt;.&lt;/p&gt;
 
 &lt;h2 id=&quot;synthesis-problem&quot;&gt;Synthesis problem&lt;/h2&gt;
 
 &lt;p&gt;To solve the synthesis problem above with an SMT solver,
-we encode the problem in the form of &lt;script type=&quot;math/tex&quot;&gt;\exists.\forall .\varphi&lt;/script&gt;:&lt;/p&gt;
+we encode the problem in the form of \(\exists.\forall .\varphi\):&lt;/p&gt;
 
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;\exists ?_1, ?_2 . \forall x,y,z,w .&lt;/script&gt;
+\[\exists ?_1, ?_2 . \forall x,y,z,w .\]
 
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;(\underbrace{x &gt; 0}_{\text{pre}} \land \underbrace{?_1 \leq y \leq ?_2  \land w = 1 - (?_2-?_1)/3x }_{\text{encoding of } f_\textit{synth}}) \Longrightarrow (\underbrace{y \geq x}_{\text{post}} \land \underbrace{w \leq \color{red}{1/3}}_{\text{failure prob.}})&lt;/script&gt;
+\[(\underbrace{x &amp;gt; 0}_{\text{pre}} \land \underbrace{?_1 \leq y \leq ?_2  \land w = 1 - (?_2-?_1)/3x }_{\text{encoding of } f_\textit{synth}}) \Longrightarrow (\underbrace{y \geq x}_{\text{post}} \land \underbrace{w \leq \color{red}{1/3}}_{\text{failure prob.}})\]
 
 &lt;p&gt;The idea is we want to find ($\exists$) solutions to the unknowns $?_1$ and $?_2$
 such that for any execution ($\forall$) where $x&amp;gt;0$ the postcondition holds and the failure probability is no more than $1/3$.&lt;/p&gt;
 
 &lt;p&gt;A solution to this problem is one that sets $?_1$ to $x$ and $?_2$ to $3x$,
-resulting in the program &lt;code class=&quot;highlighter-rouge&quot;&gt;f_nondet&lt;/code&gt; above, whose correctness implies the Hoare triple &lt;script type=&quot;math/tex&quot;&gt;\vdash_{\color{red}{1/3}} \{x &gt; 0\}  ~f(x)~ \{y \geq x\}&lt;/script&gt;.&lt;/p&gt;
+resulting in the program &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;f_nondet&lt;/code&gt; above, whose correctness implies the Hoare triple \(\vdash_{\color{red}{1/3}} \{x &amp;gt; 0\}  ~f(x)~ \{y \geq x\}\).&lt;/p&gt;
 
 &lt;h2 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h2&gt;
 
@@ -166,10 +166,10 @@ But that’s not to say that solving the resulting formulas is easy!&lt;/p&gt;
 It’s really fascinating how far we can take SMT solvers.&lt;/p&gt;
 
 &lt;p&gt;&lt;em&gt;Thanks to Calvin Smith for comments on an earlier draft. I stole the figures from his slides.&lt;/em&gt;&lt;/p&gt;
-&lt;div class=&quot;footnotes&quot;&gt;
+&lt;div class=&quot;footnotes&quot; role=&quot;doc-endnotes&quot;&gt;
   &lt;ol&gt;
-    &lt;li id=&quot;fn:union-bound&quot;&gt;
-      &lt;p&gt;Notation from union bound logic, a probabilistic Hoare logic due to &lt;a href=&quot;https://arxiv.org/abs/1602.05681&quot;&gt;Barthe et al.&lt;/a&gt; &lt;a href=&quot;#fnref:union-bound&quot; class=&quot;reversefootnote&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;li id=&quot;fn:union-bound&quot; role=&quot;doc-endnote&quot;&gt;
+      &lt;p&gt;Notation from union bound logic, a probabilistic Hoare logic due to &lt;a href=&quot;https://arxiv.org/abs/1602.05681&quot;&gt;Barthe et al.&lt;/a&gt; &lt;a href=&quot;#fnref:union-bound&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
     &lt;/li&gt;
   &lt;/ol&gt;
 &lt;/div&gt;
@@ -193,13 +193,13 @@ The assumption is that—extrapolating from myself here—you got into this fiel
 &lt;h2 id=&quot;programming-language&quot;&gt;Programming language&lt;/h2&gt;
 &lt;p&gt;Let’s consider a very simple programming language where there are no loops or conditions, just a sequence of assignment statements of the form:&lt;/p&gt;
 
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;v_1 \gets c&lt;/script&gt;
+\[v_1 \gets c\]
 
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;v_1 \gets v_2 \times v_3&lt;/script&gt;
+\[v_1 \gets v_2 \times v_3\]
 
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;v_1 \gets v_2 + v_3&lt;/script&gt;
+\[v_1 \gets v_2 + v_3\]
 
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;v_1 \gets cos(v_2)&lt;/script&gt;
+\[v_1 \gets cos(v_2)\]
 
 &lt;p&gt;Here, $c$ is a real-valued constant and $v_i$ are real-valued program variables.
 Any program $P$ in this language is assumed to have a single special input variable $x$ and an output variable $y$.&lt;/p&gt;
@@ -212,12 +212,11 @@ This is equivalent to &lt;em&gt;continuation-passing style&lt;/em&gt; (CPS). If 
 Consider the function $f(x) = x^2 + cos(x^2)$.
 We can write this in our language as the program $P$ below:&lt;/p&gt;
 
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
-\begin{align*}
-v_1 &amp;\gets x \times x\\
-v_2 &amp;\gets cos(v_1)\\
-y &amp;\gets v_1 + v_2
-\end{align*} %]]&gt;&lt;/script&gt;
+\[\begin{align*}
+v_1 &amp;amp;\gets x \times x\\
+v_2 &amp;amp;\gets cos(v_1)\\
+y &amp;amp;\gets v_1 + v_2
+\end{align*}\]
 
 &lt;p&gt;If you plot this function, you get the following spooky graph:
 &lt;img src=&quot;https://barghouthi.github.io/assets/graph.png&quot; alt=&quot;Graph of running example&quot; /&gt;&lt;/p&gt;
@@ -225,7 +224,7 @@ y &amp;\gets v_1 + v_2
 &lt;p&gt;If you remember your calculus, the partial derivative of a function $\frac{\partial f}{\partial x}$ is essentially the rate of change of the output $y$ as $x$ changes.
 For our function $f$,&lt;/p&gt;
 
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;\frac{\partial f}{\partial x}(x) = 2x - 2x \times sin(x)&lt;/script&gt;
+\[\frac{\partial f}{\partial x}(x) = 2x - 2x \times sin(x)\]
 
 &lt;p&gt;Notice that  $\frac{\partial f}{\partial x}(0) = 0$,
 since  $x = 0$ is a &lt;em&gt;stationary point&lt;/em&gt;, so the rate of change at that point is 0.&lt;/p&gt;
@@ -255,7 +254,7 @@ $s(v)$ denotes the value of $v$ in state $s$, and $s[v \mapsto c]$ denotes state
 
 &lt;p&gt;Below, we define the new semantics with a function $\partial\textit{post}$, where we keep track of two copies of the program variables, the variables $v_i$ and a new copy $\dot v_i$, which denotes the rate of change of $v_i$ w.r.t. the input $x$, i.e.,&lt;/p&gt;
 
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;\dot v_i = \frac {\partial v_i}{\partial x}(x)&lt;/script&gt;
+\[\dot v_i = \frac {\partial v_i}{\partial x}(x)\]
 
 &lt;p&gt;Finally, when the program terminates with the new semantics, we can recover the variable $\dot y$, which will hold the value $\frac{\partial P}{\partial x}(x)$.&lt;/p&gt;
 
@@ -266,25 +265,25 @@ $s(v)$ denotes the value of $v$ in state $s$, and $s[v \mapsto c]$ denotes state
 &lt;p&gt;&lt;strong&gt;Constant assignment&lt;/strong&gt; For the constant assignment $v_1 \gets c$,
 we have&lt;/p&gt;
 
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;\partial\textit{post}(v_1 \gets c, s) \triangleq s[v_1 \mapsto c][ \dot v_1 \mapsto 0]&lt;/script&gt;
+\[\partial\textit{post}(v_1 \gets c, s) \triangleq s[v_1 \mapsto c][ \dot v_1 \mapsto 0]\]
 
 &lt;p&gt;In other words, the rate of change of $v_1$ is zero, since it’s not dependent on $x$ in any way.&lt;/p&gt;
 
 &lt;p&gt;&lt;strong&gt;Addition&lt;/strong&gt; For addition, we have&lt;/p&gt;
 
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;\partial\textit{post}(v_1 \gets v_2 + v_3, s) \triangleq s[v \mapsto s(v_1) + s(v_2)][ \dot v \mapsto s(\dot v_1) + s(\dot v_2)]&lt;/script&gt;
+\[\partial\textit{post}(v_1 \gets v_2 + v_3, s) \triangleq s[v \mapsto s(v_1) + s(v_2)][ \dot v \mapsto s(\dot v_1) + s(\dot v_2)]\]
 
 &lt;p&gt;That is, the rate of change of $v_1$ is the sum of the rates of change of $v_2$ and $v_3$.&lt;/p&gt;
 
 &lt;p&gt;&lt;strong&gt;Multiplication&lt;/strong&gt; For multiplication,&lt;/p&gt;
 
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;\partial\textit{post}(v_1 \gets v_2 \times v_3, s) \triangleq s[v_1 \mapsto s(v_2) \times s(v_3)][\dot v_1 \mapsto \dot v_2 \times v_3 + v_2 \times \dot v_3]&lt;/script&gt;
+\[\partial\textit{post}(v_1 \gets v_2 \times v_3, s) \triangleq s[v_1 \mapsto s(v_2) \times s(v_3)][\dot v_1 \mapsto \dot v_2 \times v_3 + v_2 \times \dot v_3]\]
 
 &lt;p&gt;In other words, the rate of change of $v_1$ w.r.t. $x$ is the rate of change of $v_2$, scaled by $v_3$, plus the rate of change of $v_3$, scaled by $v_2$.&lt;/p&gt;
 
 &lt;p&gt;&lt;strong&gt;Trigonometric functions&lt;/strong&gt; For cosine, we have&lt;/p&gt;
 
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;\partial\textit{post}(v_1 \gets cos(v_2), s) \triangleq s[v \mapsto cos(s(v_2))] [\dot v \mapsto \dot v_2 \times - sin(s(v_2))]&lt;/script&gt;
+\[\partial\textit{post}(v_1 \gets cos(v_2), s) \triangleq s[v \mapsto cos(s(v_2))] [\dot v \mapsto \dot v_2 \times - sin(s(v_2))]\]
 
 &lt;p&gt;This follows from the &lt;em&gt;chain rule&lt;/em&gt;, which says that the rate of change of $f(u)$ is the rate of change of $f$ scaled by the rate of change of its argument $u$.
 You might remember that the derivative of $cos(x)$ is $-sin(x)$, so, following the chain rule, we simply scale $-sin(v_2)$ by $\dot v_2$.&lt;/p&gt;
@@ -299,16 +298,15 @@ where $y = 1$, and $\dot y = 0$.&lt;/p&gt;
 
 &lt;p&gt;Let’s step through the program one instruction at a time, maintaining both copies of the variables at every point along the way.&lt;/p&gt;
 
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
-\begin{align*}
+\[\begin{align*}
 [x = 0, \dot x = 1, \ldots]\\
-v_1 &amp;\gets x \times x\\
+v_1 &amp;amp;\gets x \times x\\
 [v_1 = 0, \dot v_1 = 0, \ldots]\\
-v_2 &amp;\gets cos(v_1)\\
+v_2 &amp;amp;\gets cos(v_1)\\
 [v_2 = 1, \dot v_2 = 0, \ldots]\\
-y &amp;\gets v_1 + v_2\\
+y &amp;amp;\gets v_1 + v_2\\
 [y = 1, \dot y = 0, \ldots]\\
-\end{align*} %]]&gt;&lt;/script&gt;
+\end{align*}\]
 
 &lt;h2 id=&quot;notes&quot;&gt;Notes&lt;/h2&gt;
 
@@ -375,8 +373,8 @@ which formalizes  the 80–20
 rule of thumb from the Equality of Employment
 Commission here in the US:&lt;/p&gt;
 
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;\frac{Pr [hire | minority]}
-{Pr [hire | \neg minority]} &gt; 0.8&lt;/script&gt;
+\[\frac{Pr [hire | minority]}
+{Pr [hire | \neg minority]} &amp;gt; 0.8\]
 
 &lt;p&gt;The intuition is simple: the probability
 of hiring from the minority applicant pool
@@ -407,8 +405,8 @@ on average; minorities go to schools
 ranked 15 on average (here $min$
 is 1 for minority and 0 for non-minority).&lt;/p&gt;
 
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;min \sim Bernoulli(0.1)\\
-urank \sim Gaussian(10 + 5*min, 10)&lt;/script&gt;
+\[min \sim Bernoulli(0.1)\\
+urank \sim Gaussian(10 + 5*min, 10)\]
 
 &lt;p&gt;With this population model,
 this program is unfair; on the above
@@ -421,7 +419,7 @@ First, we characterize a class
 of programs using a &lt;em&gt;sketch&lt;/em&gt;
 (I talked about sketches in the last &lt;a href=&quot;/2017/04/24/synthesis-primer/&quot;&gt;post&lt;/a&gt;).
 One possible sketch here is the following,
-where &lt;code class=&quot;highlighter-rouge&quot;&gt;??&lt;/code&gt; are unknowns.&lt;/p&gt;
+where &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;??&lt;/code&gt; are unknowns.&lt;/p&gt;
 
 &lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;hire&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;urank&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;??&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;urank&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;=&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;??&lt;/span&gt;
@@ -534,16 +532,16 @@ and turning a specification to a program is very hard to automate.&lt;/p&gt;
 of synthesis that are simpler to automate.
 The style of synthesis I will focus on here is
 the one pioneered in the &lt;a href=&quot;https://people.csail.mit.edu/asolar/papers/thesis.pdf&quot;&gt;Sketch&lt;/a&gt; project.
-The idea is that we start with a &lt;em&gt;reference implementation&lt;/em&gt; &lt;code class=&quot;highlighter-rouge&quot;&gt;p_naive&lt;/code&gt;.
+The idea is that we start with a &lt;em&gt;reference implementation&lt;/em&gt; &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;p_naive&lt;/code&gt;.
 Think of this as the naive solution of a problem
 that you’re sure works correctly, but that you won’t put into production, perhaps because it’s pretty inefficient.
-Your goal is to find a program &lt;code class=&quot;highlighter-rouge&quot;&gt;p_smart&lt;/code&gt;
-that is equivalent to &lt;code class=&quot;highlighter-rouge&quot;&gt;p_naive&lt;/code&gt;,
-but that is more efficient and hard to get right.&lt;sup id=&quot;fnref:fn-compiler&quot;&gt;&lt;a href=&quot;#fn:fn-compiler&quot; class=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
+Your goal is to find a program &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;p_smart&lt;/code&gt;
+that is equivalent to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;p_naive&lt;/code&gt;,
+but that is more efficient and hard to get right.&lt;sup id=&quot;fnref:fn-compiler&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:fn-compiler&quot; class=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
 
 &lt;p&gt;For illustration, let’s look at an extremely simple example.
 The naive program is the following,
-where for simplicity we assume all &lt;code class=&quot;highlighter-rouge&quot;&gt;ints&lt;/code&gt; are bitvectors with an 8-bit width.&lt;/p&gt;
+where for simplicity we assume all &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ints&lt;/code&gt; are bitvectors with an 8-bit width.&lt;/p&gt;
 
 &lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;p_naive&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
     &lt;span class=&quot;n&quot;&gt;y&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;
@@ -552,24 +550,24 @@ where for simplicity we assume all &lt;code class=&quot;highlighter-rouge&quot;&
 
 &lt;p&gt;You, as a smart (but not very smart) programmer, think
 that you can do better by writing a program of the following
-form, but you’re not sure what to place in the &lt;code class=&quot;highlighter-rouge&quot;&gt;??&lt;/code&gt;&lt;/p&gt;
+form, but you’re not sure what to place in the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;??&lt;/code&gt;&lt;/p&gt;
 
 &lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;p_smart&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
     &lt;span class=&quot;n&quot;&gt;y&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;??&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;//&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;the&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;operator&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;is&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;shift&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;left&lt;/span&gt;
     &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;y&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;In a sense, &lt;code class=&quot;highlighter-rouge&quot;&gt;p_smart&lt;/code&gt; represents a family
-of programs—all possible instantiations of the &lt;em&gt;hole&lt;/em&gt; &lt;code class=&quot;highlighter-rouge&quot;&gt;??&lt;/code&gt;.
+&lt;p&gt;In a sense, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;p_smart&lt;/code&gt; represents a family
+of programs—all possible instantiations of the &lt;em&gt;hole&lt;/em&gt; &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;??&lt;/code&gt;.
 Of course, the right completion here is replacing
-the hole with &lt;code class=&quot;highlighter-rouge&quot;&gt;1&lt;/code&gt;.&lt;/p&gt;
+the hole with &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;1&lt;/code&gt;.&lt;/p&gt;
 
 &lt;h2 id=&quot;automating-synthesis&quot;&gt;Automating synthesis&lt;/h2&gt;
 
-&lt;p&gt;So how do we automatically find the value of &lt;code class=&quot;highlighter-rouge&quot;&gt;??&lt;/code&gt;
-that makes &lt;code class=&quot;highlighter-rouge&quot;&gt;p_smart&lt;/code&gt; equivalent to &lt;code class=&quot;highlighter-rouge&quot;&gt;p_naive&lt;/code&gt;.
+&lt;p&gt;So how do we automatically find the value of &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;??&lt;/code&gt;
+that makes &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;p_smart&lt;/code&gt; equivalent to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;p_naive&lt;/code&gt;.
 Easy! There are $ 2^8 $ different instantiations 
-of &lt;code class=&quot;highlighter-rouge&quot;&gt;??&lt;/code&gt;, so we enumerate
+of &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;??&lt;/code&gt;, so we enumerate
 them until we find the right one.
 In general this incurs a combinatorial explosion.
 We cannot avoid the combinatorial problem,
@@ -578,25 +576,25 @@ search space as a formula that we can give to an efficient
 off-the-shelf solver—as we will see in a bit.&lt;/p&gt;
 
 &lt;p&gt;First, let’s try to gradually formalize the problem.
-We will use the variable &lt;code class=&quot;highlighter-rouge&quot;&gt;h&lt;/code&gt;
-to denote the hole &lt;code class=&quot;highlighter-rouge&quot;&gt;??&lt;/code&gt;.&lt;/p&gt;
+We will use the variable &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;h&lt;/code&gt;
+to denote the hole &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;??&lt;/code&gt;.&lt;/p&gt;
 
-&lt;p&gt;&lt;strong&gt;Definition 1&lt;/strong&gt; &lt;em&gt;Find a value&lt;/em&gt; for &lt;code class=&quot;highlighter-rouge&quot;&gt;h&lt;/code&gt;
-such that &lt;em&gt;for all values&lt;/em&gt; of &lt;code class=&quot;highlighter-rouge&quot;&gt;x&lt;/code&gt;,
-&lt;code class=&quot;highlighter-rouge&quot;&gt;p_naive(x) == p_smart(x)&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Definition 1&lt;/strong&gt; &lt;em&gt;Find a value&lt;/em&gt; for &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;h&lt;/code&gt;
+such that &lt;em&gt;for all values&lt;/em&gt; of &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;x&lt;/code&gt;,
+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;p_naive(x) == p_smart(x)&lt;/code&gt;.&lt;/p&gt;
 
-&lt;p&gt;&lt;strong&gt;Definition 2&lt;/strong&gt;  We can think of &lt;code class=&quot;highlighter-rouge&quot;&gt;h&lt;/code&gt; as
-an input to &lt;code class=&quot;highlighter-rouge&quot;&gt;p_smart&lt;/code&gt;.
+&lt;p&gt;&lt;strong&gt;Definition 2&lt;/strong&gt;  We can think of &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;h&lt;/code&gt; as
+an input to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;p_smart&lt;/code&gt;.
 So, our goal is really to
-&lt;em&gt;find a value&lt;/em&gt; for &lt;code class=&quot;highlighter-rouge&quot;&gt;h&lt;/code&gt;
-such that &lt;em&gt;for all values&lt;/em&gt; of &lt;code class=&quot;highlighter-rouge&quot;&gt;x&lt;/code&gt;,
-&lt;code class=&quot;highlighter-rouge&quot;&gt;p_naive(x) == p_smart(x,h)&lt;/code&gt;.&lt;/p&gt;
+&lt;em&gt;find a value&lt;/em&gt; for &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;h&lt;/code&gt;
+such that &lt;em&gt;for all values&lt;/em&gt; of &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;x&lt;/code&gt;,
+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;p_naive(x) == p_smart(x,h)&lt;/code&gt;.&lt;/p&gt;
 
-&lt;p&gt;&lt;strong&gt;Definition 3&lt;/strong&gt; Now, we can view a program, say, &lt;code class=&quot;highlighter-rouge&quot;&gt;p_naive&lt;/code&gt;,
+&lt;p&gt;&lt;strong&gt;Definition 3&lt;/strong&gt; Now, we can view a program, say, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;p_naive&lt;/code&gt;,
 as a logical relation $ \varphi_n(x,y) $
 over its input and output variables, $ x $ and $ y $.
 The idea is that the relation is true if and only
-if &lt;code class=&quot;highlighter-rouge&quot;&gt;p_naive(x) == y&lt;/code&gt;.&lt;/p&gt;
+if &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;p_naive(x) == y&lt;/code&gt;.&lt;/p&gt;
 
 &lt;p&gt;So, our goal is really to find
 &lt;em&gt;find a value&lt;/em&gt; for $ h $
@@ -608,7 +606,7 @@ is true.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Final definition&lt;/strong&gt;
 Finally, we are ready to state the problem logically.
 Find a satisfying assignment of the following formula
-&lt;script type=&quot;math/tex&quot;&gt;\forall x,y \ldotp \varphi_n(x,y) \iff \varphi_s(x,h,y)&lt;/script&gt;
+\(\forall x,y \ldotp \varphi_n(x,y) \iff \varphi_s(x,h,y)\)
 Notice that the variable $ h $
 is &lt;em&gt;free&lt;/em&gt;. Therefore, any satisfying assignment
 of this formula is only over $ h $.&lt;/p&gt;
@@ -620,14 +618,13 @@ formula. We can do this with an SMT solver like &lt;a href=&quot;https://github.
 &lt;h2 id=&quot;a-detailed-example&quot;&gt;A detailed example&lt;/h2&gt;
 
 &lt;p&gt;We can now apply the above
-process to encode &lt;code class=&quot;highlighter-rouge&quot;&gt;p_smart&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;p_naive&lt;/code&gt; as formulas.
+process to encode &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;p_smart&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;p_naive&lt;/code&gt; as formulas.
 We will encode them in the first-order theory of bitvectors,
 which has all the standard operations we care about.&lt;/p&gt;
 
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;\varphi_n(x,y) \equiv y = x * 2&lt;/script&gt;
+\[\varphi_n(x,y) \equiv y = x * 2\]
 
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
-\varphi_s(x,y,h) \equiv y = x &lt;&lt; h %]]&gt;&lt;/script&gt;
+\[\varphi_s(x,y,h) \equiv y = x &amp;lt;&amp;lt; h\]
 
 &lt;p&gt;We will now encode those in Z3
 using its Python API
@@ -652,18 +649,18 @@ on &lt;a href=&quot;http://github.com/barghouthi/704examples/blob/master/synthes
 
 &lt;p&gt;Finally, we are ready to invoke Z3:&lt;/p&gt;
 
-&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;# first, encode the universally quantified formula&lt;/span&gt;
-&lt;span class=&quot;c&quot;&gt;# (the == symbol is if and only if)&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;encoding&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ForAll&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;([&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;y&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;phi_n&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;phi_s&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;c&quot;&gt;# second, call Z3 and check if there is a model&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;s&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Solver&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;add&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;encoding&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;check&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-&lt;span class=&quot;c&quot;&gt;# print the model (i.e., the value of h)&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;model&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# first, encode the universally quantified formula
+# (the == symbol is if and only if)
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;encoding&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ForAll&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;([&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;y&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;phi_n&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;phi_s&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# second, call Z3 and check if there is a model
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;s&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Solver&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;add&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;encoding&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;check&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# print the model (i.e., the value of h)
+&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;model&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;If you run this code, you will get the output &lt;code class=&quot;highlighter-rouge&quot;&gt;[h = 1]&lt;/code&gt;,
+&lt;p&gt;If you run this code, you will get the output &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;[h = 1]&lt;/code&gt;,
 just as expected!&lt;/p&gt;
 
 &lt;h2 id=&quot;test-driven-synthesis&quot;&gt;Test-driven synthesis&lt;/h2&gt;
@@ -677,55 +674,54 @@ and find a program that passes all of them.
 You could think of this as test-driven development on steroids!&lt;/p&gt;
 
 &lt;p&gt;Say we want to write a function that, given
-bitvector &lt;code class=&quot;highlighter-rouge&quot;&gt;x&lt;/code&gt;, returns a bitvector &lt;code class=&quot;highlighter-rouge&quot;&gt;y&lt;/code&gt; that is 1  in the
-position of the first 0 from the right occuring in &lt;code class=&quot;highlighter-rouge&quot;&gt;x&lt;/code&gt;, and 0 everywhere else.&lt;sup id=&quot;fnref:fn-sketch&quot;&gt;&lt;a href=&quot;#fn:fn-sketch&quot; class=&quot;footnote&quot;&gt;2&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
+bitvector &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;x&lt;/code&gt;, returns a bitvector &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;y&lt;/code&gt; that is 1  in the
+position of the first 0 from the right occuring in &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;x&lt;/code&gt;, and 0 everywhere else.&lt;sup id=&quot;fnref:fn-sketch&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:fn-sketch&quot; class=&quot;footnote&quot;&gt;2&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
 
 &lt;p&gt;For example,&lt;/p&gt;
 
-&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;# test 1&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mo&quot;&gt;00000000&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;y&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mo&quot;&gt;00000001&lt;/span&gt;
-&lt;span class=&quot;c&quot;&gt;# test 2&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mo&quot;&gt;00000011&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;y&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mo&quot;&gt;00000100&lt;/span&gt;
-&lt;span class=&quot;c&quot;&gt;# test 3&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mo&quot;&gt;00000010&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;y&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mo&quot;&gt;00000001&lt;/span&gt;
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# test 1
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;00000000&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;y&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;00000001&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# test 2
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;00000011&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;y&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;00000100&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# test 3
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;00000010&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;y&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;00000001&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;Suppose you have the following hunch on how to write
 such a program efficiently:&lt;/p&gt;
 &lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;y&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;~&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;??&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;??&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;p&gt;Here &lt;code class=&quot;highlighter-rouge&quot;&gt;~&lt;/code&gt; is bitwise not and &lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;amp;&lt;/code&gt; is bitwise and.
+&lt;p&gt;Here &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;~&lt;/code&gt; is bitwise not and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;&amp;amp;&lt;/code&gt; is bitwise and.
 Our goal is to find solutions to the two holes
 that result in our desired program.&lt;/p&gt;
 
 &lt;p&gt;Just as before, we encode the program as a logical relation:&lt;/p&gt;
 
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
-\varphi_s \equiv y = (\sim(x + h_1))\ \&amp;\ (x + h_2) %]]&gt;&lt;/script&gt;
+\[\varphi_s \equiv y = (\sim(x + h_1))\ \&amp;amp;\ (x + h_2)\]
 
 &lt;p&gt;Note how we encoded the two holes as two variables.&lt;/p&gt;
 
 &lt;p&gt;Similarly, we can encode the test cases as a relation:&lt;/p&gt;
 
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;\varphi_t \equiv  t_1 \lor t_2 \lor t_3&lt;/script&gt;
+\[\varphi_t \equiv  t_1 \lor t_2 \lor t_3\]
 
 &lt;p&gt;where&lt;/p&gt;
 
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;t_1 \equiv x = 0 \land y = 1\\
+\[t_1 \equiv x = 0 \land y = 1\\
 t_2 \equiv x = 3 \land y = 4\\
-t_3 \equiv x = 2 \land y = 1&lt;/script&gt;
+t_3 \equiv x = 2 \land y = 1\]
 
 &lt;p&gt;Finally, we solve the following formula:
-&lt;script type=&quot;math/tex&quot;&gt;\forall x, y \ldotp \varphi_t \Rightarrow \varphi_s&lt;/script&gt;
+\(\forall x, y \ldotp \varphi_t \Rightarrow \varphi_s\)
 Observe that we have an implication and not an equivalence
 between the two relations.
 Intuitively, the relation defined by the test cases
 is small and does not define the behavior other than for
 the 3 test cases we’ve supplied.
-So what we’re looking for is a program &lt;code class=&quot;highlighter-rouge&quot;&gt;p_smart&lt;/code&gt;
+So what we’re looking for is a program &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;p_smart&lt;/code&gt;
 where all
 test cases appear in (or are a subset of) its relation.&lt;/p&gt;
 
@@ -744,15 +740,15 @@ on &lt;a href=&quot;http://github.com/barghouthi/704examples/blob/master/synthes
 &lt;span class=&quot;n&quot;&gt;encoding&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ForAll&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;([&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;y&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Implies&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;phi_t&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;phi_s&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;Solving the formula &lt;code class=&quot;highlighter-rouge&quot;&gt;encoding&lt;/code&gt;,
-we get &lt;code class=&quot;highlighter-rouge&quot;&gt;[h2 = 1, h1 = 0]&lt;/code&gt;, which results in a correct program.&lt;/p&gt;
+&lt;p&gt;Solving the formula &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;encoding&lt;/code&gt;,
+we get &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;[h2 = 1, h1 = 0]&lt;/code&gt;, which results in a correct program.&lt;/p&gt;
 
 &lt;p&gt;Since we are dealing with test cases,
 the test cases we supply may be insufficient to force the SMT
 solver to find the right program; in such case,
 you can supply more tests.
 For example, if I just give Z3 test 3, on my machine I get
-&lt;code class=&quot;highlighter-rouge&quot;&gt;[h2 = 15, h1 = 14]&lt;/code&gt;, which is incorrect (check it).&lt;/p&gt;
+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;[h2 = 15, h1 = 14]&lt;/code&gt;, which is incorrect (check it).&lt;/p&gt;
 
 &lt;h2 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h2&gt;
 &lt;p&gt;We looked at a combinatorial form of program synthesis, where we define the search space as a program with holes.
@@ -766,13 +762,13 @@ way to go; sometimes a custom enumeration algorithm outperforms
 SMT solvers. SMT solvers, however, are very good at finding
 &lt;em&gt;magic constants&lt;/em&gt;, which simple enumeration may never get to.
 So, in bit-twiddling problems, symbolic encodings like the one shown here are the way to go.&lt;/p&gt;
-&lt;div class=&quot;footnotes&quot;&gt;
+&lt;div class=&quot;footnotes&quot; role=&quot;doc-endnotes&quot;&gt;
   &lt;ol&gt;
-    &lt;li id=&quot;fn:fn-compiler&quot;&gt;
-      &lt;p&gt;“But this is what an optimizing compiler does!” you protest. Yes! But here we are taking a &lt;em&gt;combinatorial&lt;/em&gt; approach: a compiler applies a fixed set of tricks to get to an efficient program; here we will manually define a space of programs, and search it exhaustively until we find the right one. In some sense, we are doing &lt;em&gt;superoptimization&lt;/em&gt;. &lt;a href=&quot;#fnref:fn-compiler&quot; class=&quot;reversefootnote&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;li id=&quot;fn:fn-compiler&quot; role=&quot;doc-endnote&quot;&gt;
+      &lt;p&gt;“But this is what an optimizing compiler does!” you protest. Yes! But here we are taking a &lt;em&gt;combinatorial&lt;/em&gt; approach: a compiler applies a fixed set of tricks to get to an efficient program; here we will manually define a space of programs, and search it exhaustively until we find the right one. In some sense, we are doing &lt;em&gt;superoptimization&lt;/em&gt;. &lt;a href=&quot;#fnref:fn-compiler&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
     &lt;/li&gt;
-    &lt;li id=&quot;fn:fn-sketch&quot;&gt;
-      &lt;p&gt;Example borrowed from Sketch project and found through Loris D’Antoni’s notes. &lt;a href=&quot;#fnref:fn-sketch&quot; class=&quot;reversefootnote&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;li id=&quot;fn:fn-sketch&quot; role=&quot;doc-endnote&quot;&gt;
+      &lt;p&gt;Example borrowed from Sketch project and found through Loris D’Antoni’s notes. &lt;a href=&quot;#fnref:fn-sketch&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
     &lt;/li&gt;
   &lt;/ol&gt;
 &lt;/div&gt;
