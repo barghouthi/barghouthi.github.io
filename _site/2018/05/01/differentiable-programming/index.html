@@ -41,7 +41,7 @@
   
     <time datetime="2018-05-01T00:00:00-05:00" class="post-date">May  1, 2018</time><br>
   
-  <br>
+    <hr></hr>
   <p>So deep learning has taken the world by storm.
 Frameworks for training deep neural networks, like <a href="https://www.tensorflow.org/">TensorFlow</a>, allow you to construct so-called <em>differentiable programs</em>.
 The idea is that one can compute the derivative of some program (usually some neural net), and then use that to optimize its parameters.</p>
@@ -54,13 +54,13 @@ The assumption is that—extrapolating from myself here—you got into this fiel
 <h2 id="programming-language">Programming language</h2>
 <p>Let’s consider a very simple programming language where there are no loops or conditions, just a sequence of assignment statements of the form:</p>
 
-\[v_1 \gets c\]
+<script type="math/tex; mode=display">v_1 \gets c</script>
 
-\[v_1 \gets v_2 \times v_3\]
+<script type="math/tex; mode=display">v_1 \gets v_2 \times v_3</script>
 
-\[v_1 \gets v_2 + v_3\]
+<script type="math/tex; mode=display">v_1 \gets v_2 + v_3</script>
 
-\[v_1 \gets cos(v_2)\]
+<script type="math/tex; mode=display">v_1 \gets cos(v_2)</script>
 
 <p>Here, $c$ is a real-valued constant and $v_i$ are real-valued program variables.
 Any program $P$ in this language is assumed to have a single special input variable $x$ and an output variable $y$.</p>
@@ -73,11 +73,12 @@ This is equivalent to <em>continuation-passing style</em> (CPS). If you’ve use
 Consider the function $f(x) = x^2 + cos(x^2)$.
 We can write this in our language as the program $P$ below:</p>
 
-\[\begin{align*}
-v_1 &amp;\gets x \times x\\
-v_2 &amp;\gets cos(v_1)\\
-y &amp;\gets v_1 + v_2
-\end{align*}\]
+<script type="math/tex; mode=display">% <![CDATA[
+\begin{align*}
+v_1 &\gets x \times x\\
+v_2 &\gets cos(v_1)\\
+y &\gets v_1 + v_2
+\end{align*} %]]></script>
 
 <p>If you plot this function, you get the following spooky graph:
 <img src="https://barghouthi.github.io/assets/graph.png" alt="Graph of running example" /></p>
@@ -85,7 +86,7 @@ y &amp;\gets v_1 + v_2
 <p>If you remember your calculus, the partial derivative of a function $\frac{\partial f}{\partial x}$ is essentially the rate of change of the output $y$ as $x$ changes.
 For our function $f$,</p>
 
-\[\frac{\partial f}{\partial x}(x) = 2x - 2x \times sin(x)\]
+<script type="math/tex; mode=display">\frac{\partial f}{\partial x}(x) = 2x - 2x \times sin(x)</script>
 
 <p>Notice that  $\frac{\partial f}{\partial x}(0) = 0$,
 since  $x = 0$ is a <em>stationary point</em>, so the rate of change at that point is 0.</p>
@@ -115,41 +116,36 @@ $s(v)$ denotes the value of $v$ in state $s$, and $s[v \mapsto c]$ denotes state
 
 <p>Below, we define the new semantics with a function $\partial\textit{post}$, where we keep track of two copies of the program variables, the variables $v_i$ and a new copy $\dot v_i$, which denotes the rate of change of $v_i$ w.r.t. the input $x$, i.e.,</p>
 
-\[\dot v_i = \frac {\partial v_i}{\partial x}(x)\]
+<script type="math/tex; mode=display">\dot v_i = \frac {\partial v_i}{\partial x}(x)</script>
 
 <p>Finally, when the program terminates with the new semantics, we can recover the variable $\dot y$, which will hold the value $\frac{\partial P}{\partial x}(x)$.</p>
 
 <p><em>Note that, by definition, $\dot x = 1$.</em></p>
 
-<h3 id="sequential-composition">Sequential composition</h3>
-<p>For sequential composition, $P_1;P_2$, $\partial\textit{post}$ behaves just like $\textit{post}$.</p>
+<p><strong>Sequential composition</strong> For sequential composition, $P_1;P_2$, $\partial\textit{post}$ behaves just like $\textit{post}$.</p>
 
-<h3 id="constant-assignment">Constant assignment</h3>
-<p>For the constant assignment $v_1 \gets c$,
+<p><strong>Constant assignment</strong> For the constant assignment $v_1 \gets c$,
 we have</p>
 
-\[\partial\textit{post}(v_1 \gets c, s) \triangleq s[v_1 \mapsto c][ \dot v_1 \mapsto 0]\]
+<script type="math/tex; mode=display">\partial\textit{post}(v_1 \gets c, s) \triangleq s[v_1 \mapsto c][ \dot v_1 \mapsto 0]</script>
 
 <p>In other words, the rate of change of $v_1$ is zero, since it’s not dependent on $x$ in any way.</p>
 
-<h3 id="addition">Addition</h3>
-<p>For addition, we have</p>
+<p><strong>Addition</strong> For addition, we have</p>
 
-\[\partial\textit{post}(v_1 \gets v_2 + v_3, s) \triangleq s[v \mapsto s(v_1) + s(v_2)][ \dot v \mapsto s(\dot v_1) + s(\dot v_2)]\]
+<script type="math/tex; mode=display">\partial\textit{post}(v_1 \gets v_2 + v_3, s) \triangleq s[v \mapsto s(v_1) + s(v_2)][ \dot v \mapsto s(\dot v_1) + s(\dot v_2)]</script>
 
 <p>That is, the rate of change of $v_1$ is the sum of the rates of change of $v_2$ and $v_3$.</p>
 
-<h3 id="multiplication">Multiplication</h3>
-<p>For multiplication,</p>
+<p><strong>Multiplication</strong> For multiplication,</p>
 
-\[\partial\textit{post}(v_1 \gets v_2 \times v_3, s) \triangleq s[v_1 \mapsto s(v_2) \times s(v_3)][\dot v_1 \mapsto \dot v_2 \times v_3 + v_2 \times \dot v_3]\]
+<script type="math/tex; mode=display">\partial\textit{post}(v_1 \gets v_2 \times v_3, s) \triangleq s[v_1 \mapsto s(v_2) \times s(v_3)][\dot v_1 \mapsto \dot v_2 \times v_3 + v_2 \times \dot v_3]</script>
 
 <p>In other words, the rate of change of $v_1$ w.r.t. $x$ is the rate of change of $v_2$, scaled by $v_3$, plus the rate of change of $v_3$, scaled by $v_2$.</p>
 
-<h3 id="trigonometric-functions">Trigonometric functions</h3>
-<p>For cosine, we have</p>
+<p><strong>Trigonometric functions</strong> For cosine, we have</p>
 
-\[\partial\textit{post}(v_1 \gets cos(v_2), s) \triangleq s[v \mapsto cos(s(v_2))] [\dot v \mapsto \dot v_2 \times - sin(s(v_2))]\]
+<script type="math/tex; mode=display">\partial\textit{post}(v_1 \gets cos(v_2), s) \triangleq s[v \mapsto cos(s(v_2))] [\dot v \mapsto \dot v_2 \times - sin(s(v_2))]</script>
 
 <p>This follows from the <em>chain rule</em>, which says that the rate of change of $f(u)$ is the rate of change of $f$ scaled by the rate of change of its argument $u$.
 You might remember that the derivative of $cos(x)$ is $-sin(x)$, so, following the chain rule, we simply scale $-sin(v_2)$ by $\dot v_2$.</p>
@@ -164,15 +160,16 @@ where $y = 1$, and $\dot y = 0$.</p>
 
 <p>Let’s step through the program one instruction at a time, maintaining both copies of the variables at every point along the way.</p>
 
-\[\begin{align*}
+<script type="math/tex; mode=display">% <![CDATA[
+\begin{align*}
 [x = 0, \dot x = 1, \ldots]\\
-v_1 &amp;\gets x \times x\\
+v_1 &\gets x \times x\\
 [v_1 = 0, \dot v_1 = 0, \ldots]\\
-v_2 &amp;\gets cos(v_1)\\
+v_2 &\gets cos(v_1)\\
 [v_2 = 1, \dot v_2 = 0, \ldots]\\
-y &amp;\gets v_1 + v_2\\
+y &\gets v_1 + v_2\\
 [y = 1, \dot y = 0, \ldots]\\
-\end{align*}\]
+\end{align*} %]]></script>
 
 <h2 id="notes">Notes</h2>
 

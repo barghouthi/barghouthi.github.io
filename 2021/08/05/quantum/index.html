@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+</script>
+
+  <title>
+    
+      A Quantum Circuit Simulator in 27 Lines of Python &middot; 
+    
+  </title>
+
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="alternate" type="application/atom+xml" title="" href="/atom.xml">
+</head>
+
+
+  <body>
+
+    <div class="container content">
+      <header class="masthead">
+      </header>
+
+      <main>
+        <article class="post">
+
+    <a href="/" style="color: black; text-decoration:none"> <b>&larr;</b> </a>
+    <br><br>
+
+    <b>A Quantum Circuit Simulator in 27 Lines of Python</b><br>
+    
+    <a href = "http://cs.wisc.edu/~aws" STYLE="color: black; text-decoration:none">Aws Albarghouthi</a><br>
+  
+    <time datetime="2021-08-05T00:00:00-05:00" class="post-date">Aug  5, 2021</time><br>
+  
+  <br>
+  <p>We’re going to write a quantum circuit interpreter (or <em>simulator</em>) using just 27 lines of Python!</p>
+
+<p>To understand this post, you don’t need to know anything about quantum computing. All you need to know is matrix multiplication! I’ll walk you through the rest! We’re going to treat the operations of a quantum computer as yet another programming language for which we want to build an interpreter. So we won’t get too much into quantum mechanics or fancy quantum algorithms.</p>
+
+<p>You can find the entire simulator code at the <a href="#the-entire-quantum-circuit-simulator">bottom</a> of this post,
+or as a <a href="https://colab.research.google.com/drive/1sP64Lt0OFpXZOeycK4MaFpqRPHh79VEU?usp=sharing">notebook</a>.</p>
+
+<hr />
+
+<h2 id="classical-circuits">Classical circuits</h2>
+<p>We will begin by writing an interpreter for classical circuits—you know,
+good old <em>not</em>, <em>and</em>, <em>or</em>. Then, we will generalize our interpreter to quantum circuits. A classical circuit in our setting applies logical operations to $n$ bits.</p>
+
+<h3 id="classical-state">Classical state</h3>
+<p>Let’s begin by representing the state of $n$ bits. We’ll do this in an unusual way. We will define a Boolean vector (i.e., a vector of 0s and 1s) of size $2^n$ where each index of the vector represents one possible state of the $n$ bits.
+There will be a <em>single non-zero (1) element</em> in the vector indicating the state.</p>
+
+<p>For $n=1$, we have a vector of size 2, e.g.:</p>
+
+<p><img src="https://barghouthi.github.io/assets/classic1.png" alt="drawing" width="300" /></p>
+
+<p>The vector is in black; the numbers in pink (left) are the indices denoting the state of the bit. The vector above, therefore, represents a  bit that is set to 1, since it has element 1 at index 1.
+Similarly, the vector 
+\(\begin{bmatrix}
+           1\\0
+\end{bmatrix}\)
+denotes a bit set to 0, because it has element 1 at index 0.</p>
+
+<p>For $n=2$, we have a vector of size 4, like the following, which denotes that both bits are 0, because it has element 1 at index 00.</p>
+
+<p><img src="https://barghouthi.github.io/assets/classic2.png" alt="drawing" width="400" /></p>
+
+<p>You get the idea. It’s a terribly inefficient representation, but I chose it on purpose because we’ll later generalize it to <em>qubits</em>, and quantum simulation is inherently <a href="https://en.wikipedia.org/wiki/BQP">inefficient</a> as far as we can tell.</p>
+
+<p>Here’s a Python class to represent a classical state with $n$ bits.
+Note that a <code class="language-plaintext highlighter-rouge">state</code> is initialized to all bits being 0.
+Also, note that we’re using numpy (<code class="language-plaintext highlighter-rouge">np</code>)</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Cstate</span><span class="p">:</span>
+  <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+    <span class="c1"># number of bits
+</span>    <span class="bp">self</span><span class="p">.</span><span class="n">n</span> <span class="o">=</span> <span class="n">n</span>
+    
+    <span class="c1"># create vector of size 2^n
+</span>    <span class="bp">self</span><span class="p">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="bp">self</span><span class="p">.</span><span class="n">n</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="p">.</span><span class="nb">int</span><span class="p">)</span>
+
+    <span class="c1"># initialize bits to 0s
+</span>    <span class="c1"># by setting index 0 of vector to 1
+</span>    <span class="bp">self</span><span class="p">.</span><span class="n">state</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span> 
+</code></pre></div></div>
+<p>For example, the <code class="language-plaintext highlighter-rouge">state</code> field for 2 bits initially looks like this,
+denoting the state 00 (just like the 2-bit vector illustrated above)</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">[</span><span class="mi">1</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span><span class="p">]</span>
+</code></pre></div></div>
+<p>Numpy represents vectors as rows instead of columns like we do—it won’t make a difference for us.</p>
+
+<h3 id="flipping-a-bit">Flipping a bit</h3>
+<p>Let’s now apply a NOT (negation) operation to a bit.
+In a circuit of 1 bit, this looks as follows
+(where the pink stuff is an example input/output of the circuit):</p>
+
+<p><img src="https://barghouthi.github.io/assets/not1.png" alt="drawing" width="400" /></p>
+
+<p>NOT is a transformation that takes a bit from one state to another.
+We’re going to represent it as a transformation matrix:</p>
+
+<p><img src="https://barghouthi.github.io/assets/notmat.png" alt="drawing" width="300" /></p>
+
+<p>The way to read the matrix is by looking at columns then rows.
+Note that each column has a single 1  and the rest of the entries are 0.
+The position of the 1 denotes the transformation.
+Take the bottom left 1 in the matrix, which is at column 0 and row 1;
+this means that a bit that is 0 is transformed into 1.
+Take the top right 1 now, at column 1 and row 0;
+this means that a bit that is 1 is transformed into 0.</p>
+
+<p>Now to apply this transformation to a state in our representation,
+we simply multiply the NOT matrix above with the state vector.
+For example, we can apply NOT to a single bit set to 0:</p>
+
+<p><img src="https://barghouthi.github.io/assets/notmult.png" alt="drawing" width="300" /></p>
+
+<p>The above multiplication results in 
+\(\begin{bmatrix}
+           0\\1
+\end{bmatrix}\), denoting a bit set to 1.</p>
+
+<p>Intuitively, multiplication by a transformation matrix simply moves around the 1 in the input state vector to some other position in the output state vector.</p>
+
+<h3 id="handling-multiple-bits">Handling multiple bits</h3>
+<p>But what happens when we have $n$ bits and we only want to negate
+a specific one, say the $i$th one?</p>
+
+<p><img src="https://barghouthi.github.io/assets/noti.png" alt="drawing" width="300" /></p>
+
+<p>We will construct a bigger transformation matrix that only applies
+the NOT to the $i$th bit and leaves the rest untouched.
+To do so, we will “compose” the NOT matrix with two identity matrices.
+One identity matrix will say that all bits before bit $i$ (bits $0$ to $i-1$) are untouched;
+the other will say that all bits after bit $i$  (bits $i+1$ to $n-1$) are untouched.</p>
+
+<p>Let’s first do this for the simple case of two bits
+where we want to negate the second bit.
+We take the <em>Kronecker product</em> ($\otimes$) of the identity matrix (of size 2, denoted $I_2$) with the NOT transformation.</p>
+
+<p><img src="https://barghouthi.github.io/assets/not2.png" alt="drawing" width="300" /></p>
+
+<p>If you haven’t seen Kroenecker product before, don’t be scared;
+it just multiplies  each element of the left matrix with the entire right matrix.
+So in this case, we get a $4 \times 4$ matrix as follows:</p>
+
+<p><img src="https://barghouthi.github.io/assets/not4.png" alt="drawing" width="300" />
+Look at the $2 \times 2$ sub-matrix on the top left.
+It’s the result of multiplying 1 (the top-left element of $I_2$) with the NOT matrix.</p>
+
+<p>Consider the element highlighted in yellow. It says that if the  bits
+are 01 (column), then turn them into 00 (row). Observe that the second bit flips, but not the first bit, as desired. The same can be seen with the element highlighted in pink.</p>
+
+<p>Alright, let’s capture this Kronecker product idea in its general form
+and implement it.
+ $I_m$ is an indentity matrix that of size $m \times m$.</p>
+
+<p><img src="https://barghouthi.github.io/assets/notg.png" alt="drawing" width="500" /></p>
+
+<p>We will implement this as a method of the <code class="language-plaintext highlighter-rouge">Cstate</code> class
+that takes an arbitrary transformation  matrix <code class="language-plaintext highlighter-rouge">t</code> over contiguous bits and 
+applies it to all  $n$ bits.
+<code class="language-plaintext highlighter-rouge">eye</code> is numpy’s identity matrix function,
+<code class="language-plaintext highlighter-rouge">kron</code> is Kronecker product,
+and <code class="language-plaintext highlighter-rouge">matmul</code> is matrix multiplication.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">op</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+    <span class="c1"># I_{2^i}
+</span>    <span class="n">eyeL</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="n">i</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="p">.</span><span class="nb">int</span><span class="p">)</span>
+
+    <span class="c1"># I_{2^{n-i-1}}
+</span>    <span class="c1"># t.shape[0]**0.5 denotes how many bits t applies to
+</span>    <span class="c1"># in case of NOT, t.shape[0]**0.5 == 1
+</span>    <span class="n">eyeR</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="n">n</span> <span class="o">-</span> <span class="n">i</span> <span class="o">-</span> <span class="nb">int</span><span class="p">(</span><span class="n">t</span><span class="p">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mf">0.5</span><span class="p">)),</span> 
+        <span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="nb">int</span><span class="p">)</span>
+
+    <span class="c1"># eyeL ⊗ t ⊗ eyeR
+</span>    <span class="n">t_all</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">kron</span><span class="p">(</span><span class="n">np</span><span class="p">.</span><span class="n">kron</span><span class="p">(</span><span class="n">eyeL</span><span class="p">,</span> <span class="n">t</span><span class="p">),</span> <span class="n">eyeR</span><span class="p">)</span>
+
+    <span class="c1"># apply transformation to state
+</span>    <span class="bp">self</span><span class="p">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">t_all</span><span class="p">,</span> <span class="bp">self</span><span class="p">.</span><span class="n">state</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">NOT</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+    <span class="n">not_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">array</span><span class="p">([</span>
+        <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span>
+        <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>
+    <span class="p">])</span>
+    <span class="bp">self</span><span class="p">.</span><span class="n">op</span><span class="p">(</span><span class="n">not_matrix</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>The method <code class="language-plaintext highlighter-rouge">op</code> takes a transformation matrix <code class="language-plaintext highlighter-rouge">t</code>, e.g., the NOT matrix,
+and applies it to the bit <code class="language-plaintext highlighter-rouge">i</code>.
+The <code class="language-plaintext highlighter-rouge">NOT</code> method calls <code class="language-plaintext highlighter-rouge">op</code> with the NOT matrix.
+Note that <code class="language-plaintext highlighter-rouge">op</code> also works with operations that apply to more than 1 bit,
+e.g., <code class="language-plaintext highlighter-rouge">AND</code>, so long as the bits are contiguous.</p>
+
+<h3 id="binary-operations">Binary operations</h3>
+<p>Let’s now look at some binary operations.
+The following transformation swaps two bits.</p>
+
+<p><img src="https://barghouthi.github.io/assets/swap.png" alt="drawing" width="300" /></p>
+
+<p>We can implement it as follows.
+Note that <code class="language-plaintext highlighter-rouge">swap(i)</code> swaps bits <code class="language-plaintext highlighter-rouge">i</code> and <code class="language-plaintext highlighter-rouge">i+1</code>.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">swap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+    <span class="n">swap_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">array</span><span class="p">([</span>
+        <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+        <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+        <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+        <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="p">])</span>
+    <span class="bp">self</span><span class="p">.</span><span class="n">op</span><span class="p">(</span><span class="n">swap_matrix</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+</code></pre></div></div>
+<p>As a circuit, a swap is shown like this:</p>
+
+<p><img src="https://barghouthi.github.io/assets/swapc.png" alt="drawing" width="400" /></p>
+
+<p>We can similarly implement AND and OR, where the result is stored
+in the first of the two bits.
+<img src="https://barghouthi.github.io/assets/andor.png" alt="drawing" width="600" /></p>
+
+<h3 id="simple-example">Simple example</h3>
+<p>Finally, we end our discussion of classical circuits
+with a simple circuit that checks if two bits are both zero.
+The result is stored in the first bit.</p>
+
+<p><img src="https://barghouthi.github.io/assets/cex.png" alt="drawing" width="400" /></p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># initialize state
+# Recall that Cstate initializes all bits to 0
+</span><span class="n">s</span> <span class="o">=</span> <span class="n">Cstate</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> 
+<span class="n">s</span><span class="p">.</span><span class="n">NOT</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="c1"># negate first bit
+</span><span class="n">s</span><span class="p">.</span><span class="n">NOT</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># negate second bit
+</span><span class="n">s</span><span class="p">.</span><span class="n">AND</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="c1"># AND first and second bits
+</span>
+<span class="k">print</span><span class="p">(</span><span class="n">s</span><span class="p">.</span><span class="n">state</span><span class="p">)</span>
+</code></pre></div></div>
+<p>We get</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">[</span><span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">1</span><span class="p">]</span>
+</code></pre></div></div>
+<p>which means that the final state of the 2 bits is 11.
+Since the first bit is 1, this means that 
+the two bits were initially zero.</p>
+
+<p>In summary, with AND, OR, and NOT we can write an arbitrary Boolean function from $n$ bits to $n$-bits as a sequence of <code class="language-plaintext highlighter-rouge">Cstate</code> operations. Each one of these <code class="language-plaintext highlighter-rouge">Cstate</code> operations is implemented using matrix multiplication,
+and the state of the bits is encoded as a vector of size $2^n$
+with a single 1 denoting the state.</p>
+
+<h2 id="quantum-circuits">Quantum circuits</h2>
+<p>We now generalize the above to quantum circuits.
+Instead of bits, we have <em>qubits</em>.
+A qubit can be 0, 1, or a superposition of 0 and 1.
+So if you write out its vector, it can have numbers in different indices.
+E.g.,</p>
+
+<p><img src="https://barghouthi.github.io/assets/qubit.png" alt="drawing" width="300" /></p>
+
+<p>What this says is that if you <em>measure</em> the qubit—read its value—you will read 0 with probability 1/2 and 1 with probability 1/2. The probability is the sqaure of the absolute value of $1/\sqrt{2}$, the <em>amplitude</em>.
+Amplitudes can be complex numbers.
+If you sum up the squares of absolute amplitudes, you should get 1,
+since they encode a probability distribution. In the above example, we have</p>
+
+\[\left\vert\frac{1}{\sqrt{2}}\right\vert^2 + \left\vert\frac{1}{\sqrt{2}}\right\vert^2 = 1\]
+
+<p>The above qubit vector is usually written with the following notation:
+\(\frac{1}{\sqrt{2}} \vert0\rangle + \frac{1}{\sqrt{2}} \vert1\rangle\).
+Amplitudes are multiplied by the classical states, 0 and 1, which are wrapped in the notation \(\vert\cdot\rangle\) for historical reasons.</p>
+
+<p>We can easily represent this quantum state by copy-pasting the class definition
+of classical states and changing the types from <code class="language-plaintext highlighter-rouge">int</code> to <code class="language-plaintext highlighter-rouge">complex</code>.
+Who said copy-paste is bad?
+Voila! We now have a quantum state class <code class="language-plaintext highlighter-rouge">Qstate</code>.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Qstate</span><span class="p">:</span>
+  <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+    <span class="bp">self</span><span class="p">.</span><span class="n">n</span> <span class="o">=</span> <span class="n">n</span>
+    <span class="bp">self</span><span class="p">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="bp">self</span><span class="p">.</span><span class="n">n</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="p">.</span><span class="nb">complex</span><span class="p">)</span>
+    <span class="bp">self</span><span class="p">.</span><span class="n">state</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span> <span class="c1">#initialize qubits to 0s
+</span></code></pre></div></div>
+
+<h3 id="hadamard-gate">Hadamard gate</h3>
+<p>Transformations of quantum states are also matrices,
+but they can have complex numbers.
+The matrices are <em>unitary</em>, which means that they are invertible
+and maintain that the state represents a probability distribution.
+This fact comes from the postulates of quantum mechanics, but doesn’t really concern us when implementing an interpreter.
+It’s interesting to note though that AND and OR are not unitary,
+because they’re not reversible,
+and therefore are not quantum operations.</p>
+
+<p>The first transformation we’ll look at is <em>Hadamard</em>, which applies to a single qubit.</p>
+
+<p><img src="https://barghouthi.github.io/assets/hadamard.png" alt="drawing" width="300" /></p>
+
+<p>A Hadamard gate puts a state in superposition.
+For example, given the classical state $\vert0\rangle$, i.e., the vector \(\begin{bmatrix}
+           1\\ 0
+\end{bmatrix}\),
+it transforms it into the superposition we saw above,</p>
+
+\[\frac{1}{\sqrt{2}} \vert0\rangle + \frac{1}{\sqrt{2}} \vert1\rangle\]
+
+<p>As a circuit, we write this as follows:</p>
+
+<p><img src="https://barghouthi.github.io/assets/hadamard2.png" alt="drawing" width="500" /></p>
+
+<p>Similarly, given the state $\vert1\rangle$, Hadamard
+ transforms it into the superposition</p>
+
+\[\frac{1}{\sqrt{2}} \vert0\rangle - \frac{1}{\sqrt{2}} \vert1\rangle\]
+
+<p>or equivalently the vector</p>
+
+\[\begin{bmatrix}
+          \frac{1}{\sqrt{2}} \\ - \frac{1}{\sqrt{2}}
+\end{bmatrix}\]
+
+<p>Note the negative amplitude of $\vert1\rangle$.
+This is a key property of quantum mechanics that quantum algorithms exploit,
+allowing amplitudes to cancel out (interfere), which we cannot achieve with classical randomized algorithms. We won’t get into it, but I recommend taking   a look at <a href="https://quantum.country/search">Grover’s algorithm</a> (which is beautiful).</p>
+
+<p>We will implement Hadamard just as we did with NOT.
+I’m using <code class="language-plaintext highlighter-rouge">isq2</code> as a shorthand for $1/\sqrt{2}$.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># this function is the same as in the classical case
+# the only difference is dtype, which is np.complex now
+</span><span class="k">def</span> <span class="nf">op</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+    <span class="c1">#I_{2^i}
+</span>    <span class="n">eyeL</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="n">i</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="p">.</span><span class="nb">complex</span><span class="p">)</span>
+
+    <span class="c1">#I_{2^{n-i-1}}
+</span>    <span class="n">eyeR</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="n">n</span> <span class="o">-</span> <span class="n">i</span> <span class="o">-</span> <span class="nb">int</span><span class="p">(</span><span class="n">t</span><span class="p">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mf">0.5</span><span class="p">)),</span> 
+        <span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="nb">complex</span><span class="p">)</span>
+
+    <span class="c1"># eyeL ⊗ t ⊗ eyeR
+</span>    <span class="n">t_all</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">kron</span><span class="p">(</span><span class="n">np</span><span class="p">.</span><span class="n">kron</span><span class="p">(</span><span class="n">eyeL</span><span class="p">,</span> <span class="n">t</span><span class="p">),</span> <span class="n">eyeR</span><span class="p">)</span>
+
+    <span class="c1"># apply transformation to state
+</span>    <span class="bp">self</span><span class="p">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">t_all</span><span class="p">,</span> <span class="bp">self</span><span class="p">.</span><span class="n">state</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">hadamard</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+    <span class="n">h_matrix</span> <span class="o">=</span> <span class="n">isq2</span> <span class="o">*</span> <span class="n">np</span><span class="p">.</span><span class="n">array</span><span class="p">([</span>
+      <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span>
+      <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="p">])</span>    
+    <span class="bp">self</span><span class="p">.</span><span class="n">op</span><span class="p">(</span><span class="n">h_matrix</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+</code></pre></div></div>
+
+<h3 id="controlled-not-gate">Controlled NOT gate</h3>
+<p>Next, we’ll look at the CNOT (controlled NOT) gate, which is a binary gate.</p>
+
+<p><img src="https://barghouthi.github.io/assets/cnot.png" alt="drawing" width="300" /></p>
+
+<p>Classically speaking, 
+this takes the XOR of two bits and stores the result
+in the second bit.
+But, as we shall see, it is fundamental in quantum computing,
+as it allows us to <em>entangle</em> two qubits (more on this in a bit).
+Pictorially, CNOT is denoted as follows:</p>
+
+<p><img src="https://barghouthi.github.io/assets/cnotc.png" alt="drawing" width="300" /></p>
+
+<p>Again, we will implement CNOT  just like 
+in the classical setting:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">cnot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+  <span class="n">cnot_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">array</span><span class="p">([</span>
+      <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+      <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+      <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+      <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+  <span class="p">])</span>
+  <span class="bp">self</span><span class="p">.</span><span class="n">op</span><span class="p">(</span><span class="n">cnot_matrix</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+</code></pre></div></div>
+<p>Qubit swaps are the same as classical bit swaps.</p>
+
+<h3 id="phase-shift-gates">Phase-shift gates</h3>
+<p>In the classical setting, AND and NOT suffice to 
+implement any Boolean function.
+In the quantum setting, we’re missing two single-bit gates
+that give us the full power of a quantum computer.
+By full power, I mean a set of gates that can approximate any 
+unitary transformation to an arbitrary degree of accuracy.</p>
+
+<p>The two missing gates are the $S$ and $T$ gates.
+These gates don’t change the probability 
+of measurement, but they change the <em>phase</em> of the amplitudes.
+This is where complex numbers come into play.</p>
+
+<p>We’ll take a look at the $S$ gate: 
+<img src="https://barghouthi.github.io/assets/s.png" alt="drawing" width="200" />
+Applying $S$ to a state doesn’t change the amplitude of $\vert0\rangle$,
+but it multiplies the amplitude of $\vert1\rangle$ by $i$—the imaginary unit. (Remember complex numbers?)
+For example, if we apply $S$ to the superposition state, we get:</p>
+
+<p><img src="https://barghouthi.github.io/assets/s2.png" alt="drawing" width="400" />
+Check out how the amplitude of $\vert1\rangle$ 
+changed to $i / \sqrt{2}$.
+If we turn the amplitude of $\vert 1 \rangle$ into a probability, we get the same probability as before:</p>
+
+\[\left\vert\frac{1}{\sqrt{2}}\right\vert^2 = \left\vert\frac{i}{\sqrt{2}}\right\vert^2 = 1/2\]
+
+<p>So while the amplitude has changed, the probabilities haven’t.</p>
+
+<p>Here are the $S$ and $T$ gates in code.
+Note that numpy uses $j$ instead of $i$ for the imaginary unit.
+The $T$ gate is similar to the $S$ gate, in that it only changes the amplitude of $\vert1\rangle$,
+but it changes it in a different way.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># S gate
+</span><span class="k">def</span> <span class="nf">s</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+  <span class="n">s_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">array</span><span class="p">([</span>
+      <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span>
+      <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mf">1j</span><span class="p">]</span>
+  <span class="p">])</span>    
+  <span class="bp">self</span><span class="p">.</span><span class="n">op</span><span class="p">(</span><span class="n">s_matrix</span><span class="p">,</span><span class="n">i</span><span class="p">)</span>
+
+<span class="c1"># T gate
+</span><span class="k">def</span> <span class="nf">t</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+  <span class="n">t_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">array</span><span class="p">([</span>
+      <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span>
+      <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="n">isq2</span> <span class="o">+</span> <span class="n">isq2</span> <span class="o">*</span> <span class="mf">1j</span><span class="p">]</span>
+  <span class="p">])</span>
+  <span class="bp">self</span><span class="p">.</span><span class="n">op</span><span class="p">(</span><span class="n">t_matrix</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+</code></pre></div></div>
+
+<h2 id="epr-pairs">EPR pairs</h2>
+<p>At this point, we have a full-blown quantum-circuit simulator.
+You can always add more gates as needed, but we have already implemented a  <em>universal gate set</em>.</p>
+
+<p>We will end with constructing an <em>EPR pair</em>, a special entangled state of two qubits proposed by Einstein, Podolsky and Rosen in 1935 to argue that quantum mechanics is incomplete.</p>
+
+<p>Here’s how the circuit looks. Apply a Hadamard to the first qubit,
+putting it in superposition, then apply a CNOT to both qubits.
+<img src="https://barghouthi.github.io/assets/epr.png" alt="drawing" width="600" /></p>
+
+<p>This results in the following state, which is called an EPR pair or a <em>Bell state</em>:</p>
+
+\[\frac{1}{\sqrt{2}} \vert00\rangle + \frac{1}{\sqrt{2}} \vert11\rangle\]
+
+<p>In vector notation, an EPR pair is
+<img src="https://barghouthi.github.io/assets/epr2.png" alt="drawing" width="200" /></p>
+
+<p>The beauty of this state is that the two qubits are entangled.
+This means that if we measure the first bit, we will get 0 or 1 
+with equal probability.
+But then the other qubit will also <em>collapse</em> to the same
+answer that we get.
+So if each of us has one of the two entangled bits,
+it appears that we can achieve instantaneous communication!
+This didn’t sit well with Einstein and his friends.
+Indeed, their construction of EPR pairs was to demonstrate a paradox.
+EPR pairs are key ingredients in <a href="https://quantum.country/teleportation">quantum teleportation</a>, which I encourage you to read about.</p>
+
+<p>Here’s how we construct an EPR pair with our interpreter.</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># constructing an EPR pair
+</span><span class="n">s</span> <span class="o">=</span> <span class="n">Qstate</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="c1"># create a 2-qubit state
+</span><span class="n">s</span><span class="p">.</span><span class="n">hadamard</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="c1"># hadamard on first qubit
+</span><span class="n">s</span><span class="p">.</span><span class="n">cnot</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="c1"># CNOT the two qubits
+</span>
+<span class="k">print</span><span class="p">(</span><span class="n">s</span><span class="p">.</span><span class="n">state</span><span class="p">)</span>
+</code></pre></div></div>
+<p>We get the following output,
+which I’ve simplified for legibility.
+(Note that  $1/\sqrt{2} \approx 0.70710678$)</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">[</span><span class="mf">0.70710678</span>   <span class="mi">0</span>   <span class="mi">0</span>   <span class="mf">0.70710678</span><span class="p">]</span>
+</code></pre></div></div>
+
+<h2 id="notes">Notes</h2>
+
+<p>That’s it, folks. We’ve implemented a quantum circuit simulator.</p>
+
+<ol>
+  <li>Our simulator will get exponentially slower with more qubits.
+This is sadly unavoidable. Nonetheless, researchers have come up with lots of techniques
+to make quantum simulations faster on classical computers,
+e.g., using BDDs and parallelism.</li>
+  <li>Our simulator doesn’t implement measurement,
+because it represents the entire probability distribution explicitly.</li>
+  <li>Our binary gates apply to contiguous (qu)bits.
+This makes the <code class="language-plaintext highlighter-rouge">op</code> function simpler to write. We can generalize the <code class="language-plaintext highlighter-rouge">op</code> function to apply binary gates to any pair of (qu)bits, but it gets  uglier. Since we have <code class="language-plaintext highlighter-rouge">swap</code>, we can always move qubits next to each other.</li>
+  <li>As an introduction to quantum computing, I recommend Matuschak and Nielsen’s <a href="https://quantum.country/">Quantum Country</a>.</li>
+</ol>
+
+<p><em>Thanks to John Cyphert for his insightful comments.</em></p>
+
+<h2 id="the-entire-quantum-circuit-simulator">The Entire Quantum Circuit Simulator</h2>
+<p>Here are all 27 lines of code.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="n">np</span>
+
+<span class="n">isq2</span> <span class="o">=</span> <span class="mf">1.0</span><span class="o">/</span><span class="p">(</span><span class="mf">2.0</span><span class="o">**</span><span class="mf">0.5</span><span class="p">)</span>
+
+<span class="k">class</span> <span class="nc">Qstate</span><span class="p">:</span>
+  <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+    <span class="bp">self</span><span class="p">.</span><span class="n">n</span> <span class="o">=</span> <span class="n">n</span>
+    <span class="bp">self</span><span class="p">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="bp">self</span><span class="p">.</span><span class="n">n</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="p">.</span><span class="nb">complex</span><span class="p">)</span>
+    <span class="bp">self</span><span class="p">.</span><span class="n">state</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+
+  <span class="c1"># apply transformation t to bit i 
+</span>  <span class="c1"># (or i and i+1 in case of binary gates)
+</span>  <span class="k">def</span> <span class="nf">op</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+    <span class="c1"># I_{2^i}
+</span>    <span class="n">eyeL</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="n">i</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="p">.</span><span class="nb">complex</span><span class="p">)</span>
+
+    <span class="c1"># I_{2^{n-i-1}}
+</span>    <span class="c1"># t.shape[0]**0.5 denotes how many bits t applies to
+</span>    <span class="c1"># in case of NOT, t.shape[0]**0.5 == 1
+</span>    <span class="n">eyeR</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="n">n</span> <span class="o">-</span> <span class="n">i</span> <span class="o">-</span> <span class="nb">int</span><span class="p">(</span><span class="n">t</span><span class="p">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mf">0.5</span><span class="p">)),</span> 
+        <span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="nb">complex</span><span class="p">)</span>
+
+    <span class="c1"># eyeL ⊗ t ⊗ eyeR
+</span>    <span class="n">t_all</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">kron</span><span class="p">(</span><span class="n">np</span><span class="p">.</span><span class="n">kron</span><span class="p">(</span><span class="n">eyeL</span><span class="p">,</span> <span class="n">t</span><span class="p">),</span> <span class="n">eyeR</span><span class="p">)</span>
+
+    <span class="c1"># apply transformation to state (multiplication)
+</span>    <span class="bp">self</span><span class="p">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">t_all</span><span class="p">,</span> <span class="bp">self</span><span class="p">.</span><span class="n">state</span><span class="p">)</span>
+
+  <span class="c1"># Hadamard gate
+</span>  <span class="k">def</span> <span class="nf">hadamard</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+    <span class="n">h_matrix</span> <span class="o">=</span> <span class="n">isq2</span> <span class="o">*</span> <span class="n">np</span><span class="p">.</span><span class="n">array</span><span class="p">([</span>
+        <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span>
+        <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="p">])</span>    
+    <span class="bp">self</span><span class="p">.</span><span class="n">op</span><span class="p">(</span><span class="n">h_matrix</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+
+  <span class="c1"># T gate
+</span>  <span class="k">def</span> <span class="nf">t</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+    <span class="n">t_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">array</span><span class="p">([</span>
+        <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span>
+        <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="n">isq2</span> <span class="o">+</span> <span class="n">isq2</span> <span class="o">*</span> <span class="mf">1j</span><span class="p">]</span>
+    <span class="p">])</span>
+    <span class="bp">self</span><span class="p">.</span><span class="n">op</span><span class="p">(</span><span class="n">t_matrix</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+
+  <span class="c1"># S gate
+</span>  <span class="k">def</span> <span class="nf">s</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+    <span class="n">s_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">array</span><span class="p">([</span>
+        <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span>
+        <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="o">+</span><span class="mf">1j</span><span class="p">]</span>
+    <span class="p">])</span>    
+    <span class="bp">self</span><span class="p">.</span><span class="n">op</span><span class="p">(</span><span class="n">s_matrix</span><span class="p">,</span><span class="n">i</span><span class="p">)</span>
+
+  <span class="c1"># CNOT gate
+</span>  <span class="k">def</span> <span class="nf">cnot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+    <span class="n">cnot_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">array</span><span class="p">([</span>
+        <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+        <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+        <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+        <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+    <span class="p">])</span>
+    <span class="bp">self</span><span class="p">.</span><span class="n">op</span><span class="p">(</span><span class="n">cnot_matrix</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+  
+  <span class="c1"># Swap two qubits
+</span>  <span class="k">def</span> <span class="nf">swap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+    <span class="n">swap_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">array</span><span class="p">([</span>
+        <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+        <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+        <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+        <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="p">])</span>
+    <span class="bp">self</span><span class="p">.</span><span class="n">op</span><span class="p">(</span><span class="n">swap_matrix</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+</code></pre></div></div>
+
+
+</article>
+
+
+      </main>
+
+    </div>
+  </body>
+</html>
