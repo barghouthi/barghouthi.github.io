@@ -4,7 +4,7 @@
  <title></title>
  <link href="https://barghouthi.github.io/atom.xml" rel="self"/>
  <link href="https://barghouthi.github.io/"/>
- <updated>2021-08-06T10:05:37-05:00</updated>
+ <updated>2023-01-24T10:13:46-06:00</updated>
  <id>https://barghouthi.github.io</id>
  <author>
    <name>Aws Albarghouthi</name>
@@ -593,7 +593,7 @@ Take this program:&lt;/p&gt;
     &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;y&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;Say we want to prove the following (probabilistic) Hoare triple:&lt;sup id=&quot;fnref:union-bound&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:union-bound&quot; class=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
+&lt;p&gt;Say we want to prove the following (probabilistic) Hoare triple:&lt;sup id=&quot;fnref:union-bound&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:union-bound&quot; class=&quot;footnote&quot; rel=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
 
 \[\vdash_{\color{red}{1/3}} \{x &amp;gt; 0\}  ~f(x)~ \{y \geq x\}\]
 
@@ -699,7 +699,7 @@ resulting in the program &lt;code class=&quot;language-plaintext highlighter-rou
 Now you can reason about randomized algorithms with first-order logic.
 But that’s not to say that solving the resulting formulas is easy!&lt;/p&gt;
 
-&lt;p&gt;Our &lt;a href=&quot;http://pages.cs.wisc.edu/~aws/papers/popl19.pdf&quot;&gt;paper&lt;/a&gt; gives a full-blow, soundness-police-compliant view of this idea – and a lot of implementation details because some of these formulas involve non-linear arithmetic and quantifier alternation. We manage to automatically prove accuracy properties of some sophisticated algorithms from the differential privacy literature.
+&lt;p&gt;Our &lt;a href=&quot;http://pages.cs.wisc.edu/~aws/papers/popl19.pdf&quot;&gt;paper&lt;/a&gt; gives a full-blown, soundness-police-compliant view of this idea – and a lot of implementation details because some of these formulas involve non-linear arithmetic and quantifier alternation. We manage to automatically prove accuracy properties of some sophisticated algorithms from the differential privacy literature.
 It’s really fascinating how far we can take SMT solvers.&lt;/p&gt;
 
 &lt;p&gt;&lt;em&gt;Thanks to Calvin Smith for comments on an earlier draft. I stole the figures from his slides.&lt;/em&gt;&lt;/p&gt;
@@ -1079,7 +1079,7 @@ Think of this as the naive solution of a problem
 that you’re sure works correctly, but that you won’t put into production, perhaps because it’s pretty inefficient.
 Your goal is to find a program &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;p_smart&lt;/code&gt;
 that is equivalent to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;p_naive&lt;/code&gt;,
-but that is more efficient and hard to get right.&lt;sup id=&quot;fnref:fn-compiler&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:fn-compiler&quot; class=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
+but that is more efficient and hard to get right.&lt;sup id=&quot;fnref:fn-compiler&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:fn-compiler&quot; class=&quot;footnote&quot; rel=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
 
 &lt;p&gt;For illustration, let’s look at an extremely simple example.
 The naive program is the following,
@@ -1220,7 +1220,7 @@ You could think of this as test-driven development on steroids!&lt;/p&gt;
 
 &lt;p&gt;Say we want to write a function that, given
 bitvector &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;x&lt;/code&gt;, returns a bitvector &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;y&lt;/code&gt; that is 1  in the
-position of the first 0 from the right occuring in &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;x&lt;/code&gt;, and 0 everywhere else.&lt;sup id=&quot;fnref:fn-sketch&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:fn-sketch&quot; class=&quot;footnote&quot;&gt;2&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
+position of the first 0 from the right occuring in &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;x&lt;/code&gt;, and 0 everywhere else.&lt;sup id=&quot;fnref:fn-sketch&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:fn-sketch&quot; class=&quot;footnote&quot; rel=&quot;footnote&quot;&gt;2&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
 
 &lt;p&gt;For example,&lt;/p&gt;
 

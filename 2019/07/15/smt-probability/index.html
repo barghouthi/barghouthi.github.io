@@ -81,7 +81,7 @@ Take this program:</p>
     <span class="k">return</span> <span class="n">y</span>
 </code></pre></div></div>
 
-<p>Say we want to prove the following (probabilistic) Hoare triple:<sup id="fnref:union-bound" role="doc-noteref"><a href="#fn:union-bound" class="footnote">1</a></sup></p>
+<p>Say we want to prove the following (probabilistic) Hoare triple:<sup id="fnref:union-bound" role="doc-noteref"><a href="#fn:union-bound" class="footnote" rel="footnote">1</a></sup></p>
 
 \[\vdash_{\color{red}{1/3}} \{x &gt; 0\}  ~f(x)~ \{y \geq x\}\]
 
@@ -187,7 +187,7 @@ resulting in the program <code class="language-plaintext highlighter-rouge">f_no
 Now you can reason about randomized algorithms with first-order logic.
 But that’s not to say that solving the resulting formulas is easy!</p>
 
-<p>Our <a href="http://pages.cs.wisc.edu/~aws/papers/popl19.pdf">paper</a> gives a full-blow, soundness-police-compliant view of this idea – and a lot of implementation details because some of these formulas involve non-linear arithmetic and quantifier alternation. We manage to automatically prove accuracy properties of some sophisticated algorithms from the differential privacy literature.
+<p>Our <a href="http://pages.cs.wisc.edu/~aws/papers/popl19.pdf">paper</a> gives a full-blown, soundness-police-compliant view of this idea – and a lot of implementation details because some of these formulas involve non-linear arithmetic and quantifier alternation. We manage to automatically prove accuracy properties of some sophisticated algorithms from the differential privacy literature.
 It’s really fascinating how far we can take SMT solvers.</p>
 
 <p><em>Thanks to Calvin Smith for comments on an earlier draft. I stole the figures from his slides.</em></p>
