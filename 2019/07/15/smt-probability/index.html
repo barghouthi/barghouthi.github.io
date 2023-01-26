@@ -5,12 +5,20 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+   <script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']]
+  },
+  svg: {
+    fontCache: 'global'
+  }
+};
+</script>
+<script type="text/javascript" id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
 </script>
 
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
-</script>
 
   <title>
     
@@ -81,7 +89,7 @@ Take this program:</p>
     <span class="k">return</span> <span class="n">y</span>
 </code></pre></div></div>
 
-<p>Say we want to prove the following (probabilistic) Hoare triple:<sup id="fnref:union-bound" role="doc-noteref"><a href="#fn:union-bound" class="footnote">1</a></sup></p>
+<p>Say we want to prove the following (probabilistic) Hoare triple:<sup id="fnref:union-bound" role="doc-noteref"><a href="#fn:union-bound" class="footnote" rel="footnote">1</a></sup></p>
 
 \[\vdash_{\color{red}{1/3}} \{x &gt; 0\}  ~f(x)~ \{y \geq x\}\]
 

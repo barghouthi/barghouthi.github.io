@@ -4,7 +4,7 @@
  <title></title>
  <link href="https://barghouthi.github.io/atom.xml" rel="self"/>
  <link href="https://barghouthi.github.io/"/>
- <updated>2021-08-06T10:05:37-05:00</updated>
+ <updated>2023-01-25T18:35:11-06:00</updated>
  <id>https://barghouthi.github.io</id>
  <author>
    <name>Aws Albarghouthi</name>
@@ -593,7 +593,7 @@ Take this program:&lt;/p&gt;
     &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;y&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;Say we want to prove the following (probabilistic) Hoare triple:&lt;sup id=&quot;fnref:union-bound&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:union-bound&quot; class=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
+&lt;p&gt;Say we want to prove the following (probabilistic) Hoare triple:&lt;sup id=&quot;fnref:union-bound&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:union-bound&quot; class=&quot;footnote&quot; rel=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
 
 \[\vdash_{\color{red}{1/3}} \{x &amp;gt; 0\}  ~f(x)~ \{y \geq x\}\]
 
@@ -1079,7 +1079,7 @@ Think of this as the naive solution of a problem
 that you’re sure works correctly, but that you won’t put into production, perhaps because it’s pretty inefficient.
 Your goal is to find a program &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;p_smart&lt;/code&gt;
 that is equivalent to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;p_naive&lt;/code&gt;,
-but that is more efficient and hard to get right.&lt;sup id=&quot;fnref:fn-compiler&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:fn-compiler&quot; class=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
+but that is more efficient and hard to get right.&lt;sup id=&quot;fnref:fn-compiler&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:fn-compiler&quot; class=&quot;footnote&quot; rel=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
 
 &lt;p&gt;For illustration, let’s look at an extremely simple example.
 The naive program is the following,
@@ -1181,9 +1181,9 @@ as 8-bitvectors.&lt;/p&gt;
 &lt;p&gt;&lt;em&gt;The code for this example is available
 on &lt;a href=&quot;http://github.com/barghouthi/704examples/blob/master/synthesis/synth.py&quot;&gt;GitHub&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
 
-&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;BitVec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'x'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;8&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;y&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;BitVec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'y'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;8&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;h&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;BitVec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'h'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;8&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;BitVec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&apos;x&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;8&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;y&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;BitVec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&apos;y&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;8&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;h&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;BitVec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&apos;h&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;8&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;Next, we encode $ \varphi_n $ and $ \varphi_s $:&lt;/p&gt;
@@ -1220,7 +1220,7 @@ You could think of this as test-driven development on steroids!&lt;/p&gt;
 
 &lt;p&gt;Say we want to write a function that, given
 bitvector &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;x&lt;/code&gt;, returns a bitvector &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;y&lt;/code&gt; that is 1  in the
-position of the first 0 from the right occuring in &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;x&lt;/code&gt;, and 0 everywhere else.&lt;sup id=&quot;fnref:fn-sketch&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:fn-sketch&quot; class=&quot;footnote&quot;&gt;2&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
+position of the first 0 from the right occuring in &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;x&lt;/code&gt;, and 0 everywhere else.&lt;sup id=&quot;fnref:fn-sketch&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:fn-sketch&quot; class=&quot;footnote&quot; rel=&quot;footnote&quot;&gt;2&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
 
 &lt;p&gt;For example,&lt;/p&gt;
 
