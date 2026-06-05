@@ -47,7 +47,7 @@ MathJax = {
     
     <a href = "http://cs.wisc.edu/~aws" STYLE="color: black; text-decoration:none">Aws Albarghouthi</a><br>
   
-    <time datetime="2017-04-24T00:00:00-05:00" class="post-date">Apr  24, 2017</time><br>
+    <time datetime="2017-04-24T00:00:00-05:00" class="post-date">April 2017</time><br>
   
   <br>
   <p>My colleague Somesh Jha recently asked me to give a lecture on <em>program synthesis</em> to his class.
@@ -91,7 +91,7 @@ but that is more efficient and hard to get right.<sup id="fnref:fn-compiler" rol
 The naive program is the following,
 where for simplicity we assume all <code class="language-plaintext highlighter-rouge">ints</code> are bitvectors with an 8-bit width.</p>
 
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">int</span> <span class="n">p_naive</span><span class="p">(</span><span class="nb">int</span> <span class="n">x</span><span class="p">):</span>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">int</span> <span class="nf">p_naive</span><span class="p">(</span><span class="nb">int</span> <span class="n">x</span><span class="p">):</span>
     <span class="n">y</span> <span class="o">=</span> <span class="n">x</span> <span class="o">*</span> <span class="mi">2</span>
     <span class="k">return</span> <span class="n">y</span>
 </code></pre></div></div>
@@ -100,7 +100,7 @@ where for simplicity we assume all <code class="language-plaintext highlighter-r
 that you can do better by writing a program of the following
 form, but you’re not sure what to place in the <code class="language-plaintext highlighter-rouge">??</code></p>
 
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">int</span> <span class="n">p_smart</span><span class="p">(</span><span class="nb">int</span> <span class="n">x</span><span class="p">):</span>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">int</span> <span class="nf">p_smart</span><span class="p">(</span><span class="nb">int</span> <span class="n">x</span><span class="p">):</span>
     <span class="n">y</span> <span class="o">=</span> <span class="n">x</span> <span class="o">&lt;&lt;</span> <span class="err">??</span> <span class="o">//</span> <span class="n">the</span> <span class="n">operator</span> <span class="o">&lt;&lt;</span> <span class="ow">is</span> <span class="n">shift</span> <span class="n">left</span>
     <span class="k">return</span> <span class="n">y</span>
 </code></pre></div></div>
@@ -187,9 +187,9 @@ as 8-bitvectors.</p>
 <p><em>The code for this example is available
 on <a href="http://github.com/barghouthi/704examples/blob/master/synthesis/synth.py">GitHub</a></em></p>
 
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">x</span> <span class="o">=</span> <span class="n">BitVec</span><span class="p">(</span><span class="s">'x'</span><span class="p">,</span><span class="mi">8</span><span class="p">)</span>
-<span class="n">y</span> <span class="o">=</span> <span class="n">BitVec</span><span class="p">(</span><span class="s">'y'</span><span class="p">,</span><span class="mi">8</span><span class="p">)</span>
-<span class="n">h</span> <span class="o">=</span> <span class="n">BitVec</span><span class="p">(</span><span class="s">'h'</span><span class="p">,</span><span class="mi">8</span><span class="p">)</span>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">x</span> <span class="o">=</span> <span class="nc">BitVec</span><span class="p">(</span><span class="sh">'</span><span class="s">x</span><span class="sh">'</span><span class="p">,</span><span class="mi">8</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="nc">BitVec</span><span class="p">(</span><span class="sh">'</span><span class="s">y</span><span class="sh">'</span><span class="p">,</span><span class="mi">8</span><span class="p">)</span>
+<span class="n">h</span> <span class="o">=</span> <span class="nc">BitVec</span><span class="p">(</span><span class="sh">'</span><span class="s">h</span><span class="sh">'</span><span class="p">,</span><span class="mi">8</span><span class="p">)</span>
 </code></pre></div></div>
 
 <p>Next, we encode $ \varphi_n $ and $ \varphi_s $:</p>
@@ -202,13 +202,13 @@ on <a href="http://github.com/barghouthi/704examples/blob/master/synthesis/synth
 
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># first, encode the universally quantified formula
 # (the == symbol is if and only if)
-</span><span class="n">encoding</span> <span class="o">=</span> <span class="n">ForAll</span><span class="p">([</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">],</span> <span class="n">phi_n</span> <span class="o">==</span> <span class="n">phi_s</span><span class="p">)</span>
+</span><span class="n">encoding</span> <span class="o">=</span> <span class="nc">ForAll</span><span class="p">([</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">],</span> <span class="n">phi_n</span> <span class="o">==</span> <span class="n">phi_s</span><span class="p">)</span>
 <span class="c1"># second, call Z3 and check if there is a model
-</span><span class="n">s</span> <span class="o">=</span> <span class="n">Solver</span><span class="p">()</span>
-<span class="n">s</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="n">encoding</span><span class="p">)</span>
-<span class="n">s</span><span class="p">.</span><span class="n">check</span><span class="p">()</span>
+</span><span class="n">s</span> <span class="o">=</span> <span class="nc">Solver</span><span class="p">()</span>
+<span class="n">s</span><span class="p">.</span><span class="nf">add</span><span class="p">(</span><span class="n">encoding</span><span class="p">)</span>
+<span class="n">s</span><span class="p">.</span><span class="nf">check</span><span class="p">()</span>
 <span class="c1"># print the model (i.e., the value of h)
-</span><span class="k">print</span> <span class="n">s</span><span class="p">.</span><span class="n">model</span><span class="p">()</span>
+</span><span class="k">print</span> <span class="n">s</span><span class="p">.</span><span class="nf">model</span><span class="p">()</span>
 </code></pre></div></div>
 
 <p>If you run this code, you will get the output <code class="language-plaintext highlighter-rouge">[h = 1]</code>,
@@ -283,12 +283,12 @@ The process is similar to what we saw above:</p>
 on <a href="http://github.com/barghouthi/704examples/blob/master/synthesis/synth_test.py">GitHub</a></em></p>
 
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">phi_s</span> <span class="o">=</span> <span class="n">y</span> <span class="o">==</span> <span class="p">(</span><span class="o">~</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">h1</span><span class="p">))</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">h2</span><span class="p">)</span>
-<span class="n">t1</span> <span class="o">=</span> <span class="n">And</span><span class="p">(</span><span class="n">x</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="n">y</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span>
-<span class="n">t2</span> <span class="o">=</span> <span class="n">And</span><span class="p">(</span><span class="n">x</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="n">y</span> <span class="o">==</span> <span class="mi">2</span><span class="p">)</span>
-<span class="n">t3</span> <span class="o">=</span> <span class="n">And</span><span class="p">(</span><span class="n">x</span> <span class="o">==</span> <span class="mi">2</span><span class="p">,</span> <span class="n">y</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span>
-<span class="n">phi_t</span> <span class="o">=</span> <span class="n">Or</span><span class="p">(</span><span class="n">t1</span><span class="p">,</span><span class="n">t2</span><span class="p">,</span><span class="n">t3</span><span class="p">)</span>
+<span class="n">t1</span> <span class="o">=</span> <span class="nc">And</span><span class="p">(</span><span class="n">x</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="n">y</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">t2</span> <span class="o">=</span> <span class="nc">And</span><span class="p">(</span><span class="n">x</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="n">y</span> <span class="o">==</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">t3</span> <span class="o">=</span> <span class="nc">And</span><span class="p">(</span><span class="n">x</span> <span class="o">==</span> <span class="mi">2</span><span class="p">,</span> <span class="n">y</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">phi_t</span> <span class="o">=</span> <span class="nc">Or</span><span class="p">(</span><span class="n">t1</span><span class="p">,</span><span class="n">t2</span><span class="p">,</span><span class="n">t3</span><span class="p">)</span>
 
-<span class="n">encoding</span> <span class="o">=</span> <span class="n">ForAll</span><span class="p">([</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">],</span> <span class="n">Implies</span><span class="p">(</span><span class="n">phi_t</span><span class="p">,</span> <span class="n">phi_s</span><span class="p">))</span>
+<span class="n">encoding</span> <span class="o">=</span> <span class="nc">ForAll</span><span class="p">([</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">],</span> <span class="nc">Implies</span><span class="p">(</span><span class="n">phi_t</span><span class="p">,</span> <span class="n">phi_s</span><span class="p">))</span>
 </code></pre></div></div>
 
 <p>Solving the formula <code class="language-plaintext highlighter-rouge">encoding</code>,
